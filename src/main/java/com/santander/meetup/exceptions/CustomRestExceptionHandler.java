@@ -20,11 +20,14 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to handle errors appropriately to be sent as responses.
+ */
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
-     * Triggered when unsupported HTTP method for given end point is received.
+     * Triggered when an unsupported HTTP method for a given end point was received.
      *
      * @param ex      the exception to handle.
      * @param headers {@code HttpHeaders}.
@@ -38,14 +41,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         StringBuilder error = new StringBuilder();
         error.append(ex.getMethod());
         error.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(t -> error.append(t + " "));
+        ex.getSupportedHttpMethods().forEach(method -> error.append(method + " "));
 
         ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, message, error.toString());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     /**
-     * Triggered when unsupported media type for given end point is received.
+     * Triggered when an unsupported media type for a given end point was received.
      *
      * @param ex      the exception to handle.
      * @param headers {@code HttpHeaders}.
@@ -56,17 +59,17 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = "Unsupported media type";
-        StringBuilder builder = new StringBuilder();
-        builder.append(ex.getContentType());
-        builder.append(" media type is not supported. Supported media types are ");
-        ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
+        StringBuilder error = new StringBuilder();
+        error.append(ex.getContentType());
+        error.append(" media type is not supported. Supported media types are ");
+        ex.getSupportedMediaTypes().forEach(mediaType -> error.append(mediaType + ", "));
 
-        ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message, builder.substring(0, builder.length() - 2));
+        ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message, error.substring(0, error.length() - 2));
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     /**
-     * Triggered when argument annotated with {@code @Valid} failed validation.
+     * Triggered when an argument annotated with {@code @Valid} failed on being validated.
      *
      * @param ex      the exception to handle.
      * @param headers {@code HttpHeaders}.
@@ -94,7 +97,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Triggered when a {@code required} request parameter is missing.
+     * Triggered when a {@code required} request parameter was missing.
      *
      * @param headers {@code HttpHeaders}.
      * @param status  {@code HttpStatus}.
@@ -111,7 +114,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Triggered when requested DML operation resulted in a violation of a defined integrity constraint.
+     * Triggered when a requested DML operation resulted in a violation of a defined integrity constraint.
      *
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
@@ -126,12 +129,12 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             message.append(violation.getPropertyPath() + " ");
         }
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message.toString().trim(), errors);
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message.toString().trim(), errors);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     /**
-     * Triggered when method argument is not the expected type.
+     * Triggered when a method argument was not the expected type.
      *
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
@@ -142,6 +145,39 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message, error);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    /**
+     * Triggered when a given entity was not found.
+     *
+     * @param ex the exception to handle.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ExceptionHandler({EntityNotFoundException.class})
+    public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
+        String message = ex.getEntityName() + " was not found";
+        String error = ex.getEntityName() + " was not found for parameter " + ex.getId();
+
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message, error);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    /**
+     * Triggered when a given entity already exists in the database.
+     *
+     * @param ex the exception to handle.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ExceptionHandler({DuplicateEntityException.class})
+    public ResponseEntity<Object> handleDuplicateResource(DuplicateEntityException ex) {
+        String message = ex.getEntityName() + " already exists";
+        StringBuilder errorBuilder = new StringBuilder();
+        errorBuilder.append(ex.getValue() + " already exists. Select another ");
+        ex.getUniqueFields().forEach(field -> errorBuilder.append(field + "-"));
+        String error = errorBuilder.toString().replaceAll("-$", "");
+
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message, error);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
