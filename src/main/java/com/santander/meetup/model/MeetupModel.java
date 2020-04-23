@@ -26,12 +26,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "meetup", uniqueConstraints = @UniqueConstraint(columnNames = { "owner_id", "day" }))
+@Table(name = "meetup", uniqueConstraints = @UniqueConstraint(columnNames = {"owner_id", "day"}))
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = { "day", "owner" })
+@EqualsAndHashCode(of = {"day", "owner"})
 public class MeetupModel {
 
     @Id

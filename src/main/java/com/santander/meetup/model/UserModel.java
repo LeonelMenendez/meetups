@@ -28,7 +28,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = { "email" })
+@EqualsAndHashCode(of = {"email"})
 public class UserModel {
 
     @Id
