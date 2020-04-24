@@ -6,10 +6,11 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Getter
 @Setter
-public class SignInDTO {
+public class SignInDTO implements Serializable {
 
     @NotBlank
     @Email

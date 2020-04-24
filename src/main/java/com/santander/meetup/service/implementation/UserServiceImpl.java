@@ -6,6 +6,7 @@ import com.santander.meetup.dto.response.UserDTO;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.UserRepository;
+import com.santander.meetup.security.JwtUtil;
 import com.santander.meetup.security.Role;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private UserDetailsService userDetailsServiceImpl;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public UserDTO signUp(SignUpDTO signUpDTO) throws DuplicateEntityException {
@@ -53,17 +62,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO signIn(SignInDTO signInDTO) {
-        String badCredentialsMessage = "The email address or password is incorrect";
-
-        UserModel user = userRepository.findByEmail(signInDTO.getEmail()).orElseThrow(() -> new BadCredentialsException(badCredentialsMessage));
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), signInDTO.getPassword());
-
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword());
         try {
-            authenticationManager.authenticate(authenticationToken);
+            UserDetails userDetails = (UserDetails) authenticationManager.authenticate(authenticationToken).getPrincipal();
+            UserDTO userDTO = modelMapper.map(userDetails, UserDTO.class);
+            userDTO.setToken(jwtUtil.generateToken(userDetails));
+            return userDTO;
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException(badCredentialsMessage);
+            throw new BadCredentialsException("The email or password is incorrect");
         }
-
-        return modelMapper.map(user, UserDTO.class);
     }
 }

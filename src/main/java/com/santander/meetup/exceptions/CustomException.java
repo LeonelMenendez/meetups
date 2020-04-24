@@ -11,7 +11,7 @@ public abstract class CustomException extends Exception {
     /**
      * Replaces the start of capitalized words with hyphens and removes the <i>Model</i> suffix.
      *
-     * @param entityClass the class from where will be obtain the name of the entity..
+     * @param entityClass the class from which the name of the entity will be obtained.
      * @return the entity name.
      */
     public static String getEntityName(Class<?> entityClass) {
