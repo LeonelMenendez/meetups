@@ -5,6 +5,8 @@ import com.santander.meetup.dto.request.SignUpDTO;
 import com.santander.meetup.dto.response.UserDTO;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/users")
+@Api(value = "Users")
 public class UserController {
 
     @Autowired
@@ -28,10 +31,12 @@ public class UserController {
 
     /**
      * Signs up a new user.
+     *
      * @param signUpDTO the sign up request body.
      * @return the signed up user.
      * @throws DuplicateEntityException if the user already exists.
      */
+    @ApiOperation(value = "Signs up a new user")
     @PostMapping("/sign-up")
     public ResponseEntity<UserDTO> signUp(@Valid @RequestBody SignUpDTO signUpDTO) throws DuplicateEntityException {
         return new ResponseEntity<>(userService.signUp(signUpDTO), HttpStatus.CREATED);
@@ -39,9 +44,11 @@ public class UserController {
 
     /**
      * Signs in a user.
+     *
      * @param signInDTO the sign in request body.
      * @return the signed in user.
      */
+    @ApiOperation(value = "Signs in a user")
     @PostMapping("/sign-in")
     public ResponseEntity<UserDTO> signIn(@Valid @RequestBody SignInDTO signInDTO) {
         return new ResponseEntity<>(userService.signIn(signInDTO), HttpStatus.CREATED);

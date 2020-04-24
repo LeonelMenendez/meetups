@@ -15,6 +15,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import static com.santander.meetup.config.SwaggerConfig.SWAGGER_AUTH_WHITELIST;
+
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,9 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/sign-in").permitAll()
+                .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST, "/users/sign-up").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/sign-in").permitAll()
                 .anyRequest().authenticated();
+
     }
 
     @Bean
