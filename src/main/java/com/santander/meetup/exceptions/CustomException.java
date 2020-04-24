@@ -1,7 +1,6 @@
 package com.santander.meetup.exceptions;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Base class to handle custom exceptions.

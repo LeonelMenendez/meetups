@@ -1,5 +1,6 @@
 package com.santander.meetup.model;
 
+import com.santander.meetup.security.Role;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,4 +58,7 @@ public class UserModel {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<MeetupUserModel> meetups = new HashSet<>();
+
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 }

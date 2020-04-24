@@ -3,6 +3,7 @@ package com.santander.meetup.exceptions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -43,7 +44,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         error.append(" method is not supported for this request. Supported methods are ");
         ex.getSupportedHttpMethods().forEach(method -> error.append(method + " "));
 
-        ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, message, error.toString());
+        ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, message, error.toString().trim());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -145,6 +146,21 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message, error);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    /**
+     * Triggered when a given authentication request was rejected because the credentials are invalid.
+     *
+     * @param ex the exception to handle.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        String message = "Bad credentials";
+        String error = ex.getMessage();
+
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, message, error);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
