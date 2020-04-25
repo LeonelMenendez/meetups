@@ -3,6 +3,7 @@ package com.santander.meetup.exceptions;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * Class to handle API errors.
  */
 @Data
-public class ApiError {
+public class ApiError implements Serializable {
 
     /**
      * The operation call status.

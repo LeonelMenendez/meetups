@@ -1,5 +1,6 @@
 package com.santander.meetup.security;
 
+import com.santander.meetup.controller.EndPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,8 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
-                .antMatchers(HttpMethod.POST, "/users/sign-up").permitAll()
-                .antMatchers(HttpMethod.POST, "/users/sign-in").permitAll()
+                .antMatchers(HttpMethod.POST, EndPoint.USERS + EndPoint.SIGN_UP).permitAll()
+                .antMatchers(HttpMethod.POST, EndPoint.USERS + EndPoint.SIGN_IN).permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler).and()

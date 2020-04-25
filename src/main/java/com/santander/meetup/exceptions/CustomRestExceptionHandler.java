@@ -12,7 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -38,7 +37,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @Override
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = "Unsupported HTTP method";
         StringBuilder error = new StringBuilder();
@@ -60,7 +58,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @Override
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = "Unsupported media type";
         StringBuilder error = new StringBuilder();
@@ -82,7 +79,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @Override
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         StringBuilder message = new StringBuilder("Invalid arguments: ");
         List<String> errors = new ArrayList<>();
@@ -110,7 +106,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @Override
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String message = "Parameter missing";
         String error = ex.getParameterName() + " parameter is missing";
@@ -126,7 +121,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @ExceptionHandler({ConstraintViolationException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
         StringBuilder message = new StringBuilder("Invalid arguments: ");
         List<String> errors = new ArrayList<>();
@@ -147,7 +141,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String message = "Invalid " + ex.getName() + "argument type";
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
@@ -163,7 +156,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @ExceptionHandler({BadCredentialsException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
         String message = "Bad credentials";
         String error = ex.getMessage();
@@ -179,7 +171,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @ExceptionHandler({EntityNotFoundException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
         String message = ex.getEntityName() + " was not found";
         String error = ex.getEntityName() + " was not found for parameter " + ex.getId();
@@ -195,7 +186,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @ExceptionHandler({DuplicateEntityException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleDuplicateResource(DuplicateEntityException ex) {
         String message = ex.getEntityName() + " already exists";
         StringBuilder errorBuilder = new StringBuilder();
@@ -214,7 +204,6 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @ExceptionHandler({Exception.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleAll(Exception ex) {
         String message = "It's not you. It's us. We are having some problems";
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, message, "error occurred");

@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+@Api(tags = "Users")
 @RestController
-@RequestMapping(value = "/users")
-@Api(value = "Users")
+@RequestMapping(value = EndPoint.USERS)
 public class UserController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class UserController {
      * @throws DuplicateEntityException if the user already exists.
      */
     @ApiOperation(value = "Signs up a new user")
-    @PostMapping("/sign-up")
+    @PostMapping(EndPoint.SIGN_UP)
     public ResponseEntity<UserDTO> signUp(@Valid @RequestBody SignUpDTO signUpDTO) throws DuplicateEntityException {
         return new ResponseEntity<>(userService.signUp(signUpDTO), HttpStatus.CREATED);
     }
@@ -49,8 +49,8 @@ public class UserController {
      * @return the signed in user.
      */
     @ApiOperation(value = "Signs in a user")
-    @PostMapping("/sign-in")
+    @PostMapping(EndPoint.SIGN_IN)
     public ResponseEntity<UserDTO> signIn(@Valid @RequestBody SignInDTO signInDTO) {
-        return new ResponseEntity<>(userService.signIn(signInDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.signIn(signInDTO), HttpStatus.OK);
     }
 }
