@@ -125,8 +125,8 @@ public class SwaggerConfig {
      */
     private String getEndPointsWhiteList() {
         StringBuilder whiteList = new StringBuilder();
-        whiteList.append(EndPoint.USERS + EndPoint.SIGN_UP + "|");
-        whiteList.append(EndPoint.USERS + EndPoint.SIGN_IN);
+        whiteList.append(EndPoint.AUTH + EndPoint.SIGN_UP + "|");
+        whiteList.append(EndPoint.AUTH + EndPoint.SIGN_IN);
         return whiteList.toString();
     }
 
