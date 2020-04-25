@@ -1,11 +1,8 @@
 package com.santander.meetup.exceptions;
 
-import lombok.Data;
-
 /**
  * Base class to handle custom exceptions.
  */
-@Data
 public abstract class CustomException extends Exception {
 
     /**

@@ -1,8 +1,8 @@
 package com.santander.meetup.service.implementation;
 
-import com.santander.meetup.dto.request.SignInDTO;
-import com.santander.meetup.dto.request.SignUpDTO;
-import com.santander.meetup.dto.response.UserDTO;
+import com.santander.meetup.dto.request.SignInDto;
+import com.santander.meetup.dto.request.SignUpDto;
+import com.santander.meetup.dto.response.UserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.security.JwtUtil;
 import com.santander.meetup.service.AuthService;
@@ -31,16 +31,16 @@ public class AuthServiceImpl implements AuthService {
     private JwtUtil jwtUtil;
 
     @Override
-    public UserDTO signUp(SignUpDTO signUpDTO) throws DuplicateEntityException {
+    public UserDto signUp(SignUpDto signUpDTO) throws DuplicateEntityException {
         return userService.create(signUpDTO);
     }
 
     @Override
-    public UserDTO signIn(SignInDTO signInDTO) {
+    public UserDto signIn(SignInDto signInDTO) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword());
         try {
             UserDetails userDetails = (UserDetails) authenticationManager.authenticate(authenticationToken).getPrincipal();
-            UserDTO userDTO = modelMapper.map(userDetails, UserDTO.class);
+            UserDto userDTO = modelMapper.map(userDetails, UserDto.class);
             userDTO.setToken(jwtUtil.generateToken(userDetails));
             return userDTO;
         } catch (BadCredentialsException e) {

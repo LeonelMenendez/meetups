@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class SignInDTO implements Serializable {
+public class SignInDto implements Serializable {
 
     @NotBlank
     @Email

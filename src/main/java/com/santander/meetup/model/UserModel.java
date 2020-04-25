@@ -62,7 +62,7 @@ public class UserModel implements UserDetails {
     private Set<MeetupModel> createdMeetups = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<MeetupUserModel> meetups = new HashSet<>();
+    private Set<EnrollmentModel> meetups = new HashSet<>();
 
     @Enumerated(EnumType.ORDINAL)
     private Role role;

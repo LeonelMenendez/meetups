@@ -1,45 +1,43 @@
 package com.santander.meetup.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "meetup_user")
-@IdClass(MeetupUserModel.CompositeId.class)
+@Table(name = "enrollment", uniqueConstraints = @UniqueConstraint(columnNames = {"meetup_id", "user_id"}))
 @Getter
 @Setter
 @NoArgsConstructor
-public class MeetupUserModel {
+public class EnrollmentModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "meetup_id")
     private MeetupModel meetup;
 
-    @Id
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserModel user;
 
     @Column(name = "checked_in")
     private boolean checkedIn;
-
-    @Data
-    public static class CompositeId implements Serializable {
-        private Long meetup;
-        private Long user;
-    }
 }
 
 

@@ -25,6 +25,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest req, HttpServletResponse res, AccessDeniedException e) throws IOException, ServletException {
         ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, "Access denied", "You don't have permission to access this resource");
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        res.setStatus(HttpStatus.FORBIDDEN.value());
         PrintWriter out = res.getWriter();
         out.print(objectMapper.writeValueAsString(apiError));
         out.flush();

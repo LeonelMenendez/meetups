@@ -47,12 +47,12 @@ public class MeetupModel {
     private UserModel owner;
 
     @NotNull
-    private double temperature;
+    private Double temperature;
 
     @CreatedDate
     @Column(name = "created_at", columnDefinition = "TIMESTAMP", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "meetup", fetch = FetchType.LAZY)
-    private Set<MeetupUserModel> inscribedUsers = new HashSet<>();
+    private Set<EnrollmentModel> inscribedUsers = new HashSet<>();
 }

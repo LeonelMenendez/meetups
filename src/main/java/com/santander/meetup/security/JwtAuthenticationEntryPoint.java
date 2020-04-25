@@ -25,6 +25,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence(HttpServletRequest req, HttpServletResponse res, AuthenticationException authException) throws IOException {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, "Invalid JWT token", "Missing or invalid JWT token");
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        res.setStatus(HttpStatus.UNAUTHORIZED.value());
         PrintWriter out = res.getWriter();
         out.print(objectMapper.writeValueAsString(apiError));
         out.flush();

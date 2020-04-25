@@ -1,6 +1,7 @@
 package com.santander.meetup.exceptions;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.List;
 /**
  * Class to handle duplicate entity exceptions.
  */
-@Data
+@Getter
+@Setter
 public class DuplicateEntityException extends CustomException {
 
     /**
@@ -17,24 +19,24 @@ public class DuplicateEntityException extends CustomException {
     private final String entityName;
 
     /**
-     * The value that caused the exception
+     * A list of values that caused the exception.
      */
-    private final Object value;
+    private final List<Object> values;
 
     /**
      * A list of unique fields by which the exception was thrown.
      */
     private final List<Object> uniqueFields;
 
-    public DuplicateEntityException(Class<?> entityClass, Object value, List<Object> uniqueFields) {
+    public DuplicateEntityException(Class<?> entityClass, List<Object> values, List<Object> uniqueFields) {
         this.entityName = getEntityName(entityClass);
-        this.value = value;
+        this.values = values;
         this.uniqueFields = uniqueFields;
     }
 
     public DuplicateEntityException(Class<?> entityClass, Object value, String field) {
         this.entityName = getEntityName(entityClass);
-        this.value = value;
+        this.values = Arrays.asList(value);
         this.uniqueFields = Arrays.asList(field);
     }
 }

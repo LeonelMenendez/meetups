@@ -1,8 +1,8 @@
 package com.santander.meetup.service;
 
-import com.santander.meetup.dto.request.SignInDTO;
-import com.santander.meetup.dto.request.SignUpDTO;
-import com.santander.meetup.dto.response.UserDTO;
+import com.santander.meetup.dto.request.SignInDto;
+import com.santander.meetup.dto.request.SignUpDto;
+import com.santander.meetup.dto.response.UserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 
 public interface AuthService {
@@ -12,8 +12,9 @@ public interface AuthService {
      *
      * @param signUpDTO the sign up data.
      * @return the signed up user.
+     * @throws DuplicateEntityException if the user already exists.
      */
-    UserDTO signUp(SignUpDTO signUpDTO) throws DuplicateEntityException;
+    UserDto signUp(SignUpDto signUpDTO) throws DuplicateEntityException;
 
     /**
      * Signs in a user.
@@ -21,5 +22,5 @@ public interface AuthService {
      * @param signInDTO the sign in data.
      * @return the signed in user.
      */
-    UserDTO signIn(SignInDTO signInDTO);
+    UserDto signIn(SignInDto signInDTO);
 }

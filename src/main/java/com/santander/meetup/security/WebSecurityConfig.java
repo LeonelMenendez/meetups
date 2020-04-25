@@ -1,6 +1,8 @@
 package com.santander.meetup.security;
 
-import com.santander.meetup.controller.EndPoint;
+import com.santander.meetup.constant.AuthEndPoint;
+import com.santander.meetup.constant.EnrollmentEndPoint;
+import com.santander.meetup.constant.MeetupEndPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,18 +48,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
-                .antMatchers(HttpMethod.POST, EndPoint.AUTH + EndPoint.SIGN_UP).permitAll()
-                .antMatchers(HttpMethod.POST, EndPoint.AUTH + EndPoint.SIGN_IN).permitAll()
+                    .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
+                    .antMatchers(HttpMethod.POST, AuthEndPoint.ROOT + AuthEndPoint.SIGN_UP).permitAll()
+                    .antMatchers(HttpMethod.POST, AuthEndPoint.ROOT + AuthEndPoint.SIGN_IN).permitAll()
+                    .antMatchers(HttpMethod.POST, MeetupEndPoint.ROOT).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.POST, EnrollmentEndPoint.ROOT).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.POST, EnrollmentEndPoint.ROOT + EnrollmentEndPoint.ANT_CHECK_IN).hasRole(Role.USER.getName())
                 .anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler).and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        // @formatter:on
     }
 
     @Bean

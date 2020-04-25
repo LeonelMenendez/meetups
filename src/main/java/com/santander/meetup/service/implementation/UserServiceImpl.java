@@ -1,8 +1,9 @@
 package com.santander.meetup.service.implementation;
 
-import com.santander.meetup.dto.request.SignUpDTO;
-import com.santander.meetup.dto.response.UserDTO;
+import com.santander.meetup.dto.request.SignUpDto;
+import com.santander.meetup.dto.response.UserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
+import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.UserRepository;
 import com.santander.meetup.security.Role;
@@ -25,10 +26,25 @@ public class UserServiceImpl implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDTO create(SignUpDTO signUpDTO) throws DuplicateEntityException {
+    public UserModel findById(Long id) throws EntityNotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(UserModel.class, id));
+    }
+
+    @Override
+    public UserModel findByEmail(String email) throws EntityNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(UserModel.class, email));
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public UserDto create(SignUpDto signUpDTO) throws DuplicateEntityException {
         UserModel user = modelMapper.map(signUpDTO, UserModel.class);
 
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (existsByEmail(user.getEmail())) {
             throw new DuplicateEntityException(UserModel.class, signUpDTO.getEmail(), "email");
         }
 
@@ -40,7 +56,6 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
         userRepository.save(user);
-
-        return modelMapper.map(user, UserDTO.class);
+        return modelMapper.map(user, UserDto.class);
     }
 }

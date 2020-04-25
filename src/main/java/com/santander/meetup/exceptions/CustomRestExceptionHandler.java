@@ -189,11 +189,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleDuplicateResource(DuplicateEntityException ex) {
         String message = ex.getEntityName() + " already exists";
         StringBuilder errorBuilder = new StringBuilder();
-        errorBuilder.append(ex.getValue() + " already exists. Select another ");
-        ex.getUniqueFields().forEach(field -> errorBuilder.append(field + "-"));
-        String error = errorBuilder.toString().replaceAll("-$", "");
+        errorBuilder.append("{" + ex.getValues().get(0).toString());
+        ex.getValues().stream().skip(1).forEach(value -> errorBuilder.append(", " + value));
+        errorBuilder.append("} already exists. Select another {");
+        errorBuilder.append(ex.getUniqueFields().get(0).toString());
+        ex.getUniqueFields().stream().skip(1).forEach(field -> errorBuilder.append(", " + field));
+        errorBuilder.append("}");
 
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message, error);
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message, errorBuilder.toString());
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

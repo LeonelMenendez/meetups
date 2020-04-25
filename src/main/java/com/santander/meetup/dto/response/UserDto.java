@@ -8,8 +8,9 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class UserDTO implements Serializable {
+public class UserDto implements Serializable {
 
+    private long id;
     private String name;
     private String email;
     private Role role;
