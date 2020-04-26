@@ -54,5 +54,5 @@ public class MeetupModel {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "meetup", fetch = FetchType.LAZY)
-    private Set<EnrollmentModel> inscribedUsers = new HashSet<>();
+    private Set<EnrollmentModel> enrolledUsers = new HashSet<>();
 }

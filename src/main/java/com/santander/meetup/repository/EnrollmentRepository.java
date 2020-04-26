@@ -8,6 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<EnrollmentModel, Long> {
+
     Optional<EnrollmentModel> findById(Long enrollmentId);
+
     boolean existsByMeetupIdAndUserId(Long meetupId, Long userId);
+
+    long countByMeetupId(Long meetupId);
 }

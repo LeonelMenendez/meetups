@@ -1,5 +1,7 @@
 package com.santander.meetup.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +16,7 @@ public class MeetupDto implements Serializable {
     private LocalDate day;
     private long ownerId;
     private double temperature;
-    private int beerCasesNeeded;
+
+    @JsonInclude(Include.NON_NULL)
+    private Integer beerCasesNeeded;
 }

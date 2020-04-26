@@ -27,6 +27,14 @@ public interface EnrollmentService {
     boolean existsByMeetupIdAndUserId(Long meetupId, Long userId);
 
     /**
+     * Counts the number of users enrolled to the given meetup.
+     *
+     * @param meetupId the meetup id of which the enrolled users will be counted.
+     * @return the number of users enrolled in the meetup.
+     */
+    long countUsersEnrolled(long meetupId);
+
+    /**
      * Creates a new enrollment.
      *
      * @param enrollmentCreationDto the enrollment creation data.
@@ -39,9 +47,9 @@ public interface EnrollmentService {
     /**
      * Makes the check-in of the user associated to the given enrollment.
      *
-     * @param enrollmentId the enrollment id for which will be make the check-in.
+     * @param enrollmentId the enrollment id for which will be made the check-in.
      * @return the updated enrollment.
-     * @throws EntityNotFoundException if the enrollment wasn't found
+     * @throws EntityNotFoundException if the enrollment wasn't found.
      */
     EnrollmentDto checkIn(long enrollmentId) throws EntityNotFoundException;
 }

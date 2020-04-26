@@ -1,6 +1,6 @@
 package com.santander.meetup.controller;
 
-import com.santander.meetup.constant.AuthEndPoint;
+import com.santander.meetup.constant.AuthEndpoint;
 import com.santander.meetup.dto.request.SignInDto;
 import com.santander.meetup.dto.request.SignUpDto;
 import com.santander.meetup.dto.response.UserDto;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @Api(tags = "Authentication")
 @RestController
-@RequestMapping(value = AuthEndPoint.ROOT)
+@RequestMapping(value = AuthEndpoint.ROOT)
 public class AuthController {
 
     @Autowired
@@ -34,7 +34,7 @@ public class AuthController {
      * @throws DuplicateEntityException if the user already exists.
      */
     @ApiOperation(value = "Signs up a new user")
-    @PostMapping(AuthEndPoint.SIGN_UP)
+    @PostMapping(AuthEndpoint.SIGN_UP)
     public ResponseEntity<UserDto> signUp(@Valid @RequestBody SignUpDto signUpDTO) throws DuplicateEntityException {
         return new ResponseEntity<>(authService.signUp(signUpDTO), HttpStatus.CREATED);
     }
@@ -46,7 +46,7 @@ public class AuthController {
      * @return the signed in user.
      */
     @ApiOperation(value = "Signs in a user")
-    @PostMapping(AuthEndPoint.SIGN_IN)
+    @PostMapping(AuthEndpoint.SIGN_IN)
     public ResponseEntity<UserDto> signIn(@Valid @RequestBody SignInDto signInDTO) {
         return new ResponseEntity<>(authService.signIn(signInDTO), HttpStatus.OK);
     }

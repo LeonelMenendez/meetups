@@ -3,7 +3,7 @@ package com.santander.meetup.config;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.santander.meetup.constant.AuthEndPoint;
+import com.santander.meetup.constant.AuthEndpoint;
 import com.santander.meetup.exceptions.ApiError;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,8 +125,8 @@ public class SwaggerConfig {
      */
     private String getEndPointsWhiteList() {
         StringBuilder whiteList = new StringBuilder();
-        whiteList.append(AuthEndPoint.ROOT + AuthEndPoint.SIGN_UP + "|");
-        whiteList.append(AuthEndPoint.ROOT + AuthEndPoint.SIGN_IN);
+        whiteList.append(AuthEndpoint.ROOT + AuthEndpoint.SIGN_UP + "|");
+        whiteList.append(AuthEndpoint.ROOT + AuthEndpoint.SIGN_IN);
         return whiteList.toString();
     }
 

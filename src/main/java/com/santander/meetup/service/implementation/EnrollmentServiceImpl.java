@@ -42,6 +42,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public long countUsersEnrolled(long meetupId) {
+        return enrollmentRepository.countByMeetupId(meetupId);
+    }
+
+    @Override
     public EnrollmentDto create(EnrollmentCreationDto enrollmentCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         EnrollmentModel enrollment = modelMapper.map(enrollmentCreationDto, EnrollmentModel.class);
         long meetupId = enrollmentCreationDto.getMeetupId();
@@ -59,7 +64,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public EnrollmentDto checkIn(long enrollmentId) throws EntityNotFoundException {
-        EnrollmentModel enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> new EntityNotFoundException(EnrollmentModel.class, enrollmentId));
+        EnrollmentModel enrollment = findById(enrollmentId);
         enrollment.setCheckedIn(true);
         enrollmentRepository.save(enrollment);
         return toDto(enrollment);

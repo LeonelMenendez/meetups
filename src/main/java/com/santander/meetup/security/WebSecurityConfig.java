@@ -1,8 +1,8 @@
 package com.santander.meetup.security;
 
-import com.santander.meetup.constant.AuthEndPoint;
-import com.santander.meetup.constant.EnrollmentEndPoint;
-import com.santander.meetup.constant.MeetupEndPoint;
+import com.santander.meetup.constant.AuthEndpoint;
+import com.santander.meetup.constant.EnrollmentEndpoint;
+import com.santander.meetup.constant.MeetupEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,11 +55,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                     .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
-                    .antMatchers(HttpMethod.POST, AuthEndPoint.ROOT + AuthEndPoint.SIGN_UP).permitAll()
-                    .antMatchers(HttpMethod.POST, AuthEndPoint.ROOT + AuthEndPoint.SIGN_IN).permitAll()
-                    .antMatchers(HttpMethod.POST, MeetupEndPoint.ROOT).hasRole(Role.ADMIN.getName())
-                    .antMatchers(HttpMethod.POST, EnrollmentEndPoint.ROOT).hasRole(Role.USER.getName())
-                    .antMatchers(HttpMethod.POST, EnrollmentEndPoint.ROOT + EnrollmentEndPoint.ANT_CHECK_IN).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.POST, AuthEndpoint.ROOT + AuthEndpoint.SIGN_UP).permitAll()
+                    .antMatchers(HttpMethod.POST, AuthEndpoint.ROOT + AuthEndpoint.SIGN_IN).permitAll()
+                    .antMatchers(HttpMethod.POST, MeetupEndpoint.ROOT).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_BEER_CASES).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_TEMPERATURE).hasAnyRole(Role.USER.getName(), Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_CREATED).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_ENROLLED).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.POST, EnrollmentEndpoint.ROOT).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.POST, EnrollmentEndpoint.ROOT + EnrollmentEndpoint.ANT_CHECK_IN).hasRole(Role.USER.getName())
                 .anyRequest().authenticated().and()
                 .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler).and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()

@@ -1,6 +1,6 @@
 package com.santander.meetup.controller;
 
-import com.santander.meetup.constant.EnrollmentEndPoint;
+import com.santander.meetup.constant.EnrollmentEndpoint;
 import com.santander.meetup.dto.request.EnrollmentCreationDto;
 import com.santander.meetup.dto.response.EnrollmentDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @Api(tags = "Enrollments")
 @RestController
-@RequestMapping(value = EnrollmentEndPoint.ROOT)
+@RequestMapping(value = EnrollmentEndpoint.ROOT)
 public class EnrollmentController {
 
     @Autowired
@@ -46,11 +46,11 @@ public class EnrollmentController {
      *
      * @param enrollmentId the enrollment id for which will be make the check-in.
      * @return the updated enrollment.
-     * @throws EntityNotFoundException if the enrollment already exists.
+     * @throws EntityNotFoundException if the given enrollment wasn't found.
      */
     @ApiOperation(value = "Makes the check-in of the user associated to the given enrollment")
-    @PostMapping(EnrollmentEndPoint.CHECK_IN)
-    public ResponseEntity<EnrollmentDto> create(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException {
-        return new ResponseEntity<>(enrollmentService.checkIn(enrollmentId), HttpStatus.CREATED);
+    @PostMapping(EnrollmentEndpoint.CHECK_IN)
+    public ResponseEntity<EnrollmentDto> checkIn(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException {
+        return new ResponseEntity<>(enrollmentService.checkIn(enrollmentId), HttpStatus.OK);
     }
 }
