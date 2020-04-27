@@ -5,7 +5,6 @@ import com.santander.meetup.dto.response.EnrollmentDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.EnrollmentModel;
-import com.santander.meetup.model.MeetupModel;
 import com.santander.meetup.repository.EnrollmentRepository;
 import com.santander.meetup.service.EnrollmentService;
 import com.santander.meetup.service.MeetupService;
@@ -52,8 +51,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         long meetupId = enrollmentCreationDto.getMeetupId();
         long userId = enrollmentCreationDto.getUserId();
 
-        if (enrollmentRepository.existsByMeetupIdAndUserId(meetupId, userId)) {
-            throw new DuplicateEntityException(MeetupModel.class, Arrays.asList(meetupId, userId), Arrays.asList("meetup", "user"));
+        if (existsByMeetupIdAndUserId(meetupId, userId)) {
+            throw new DuplicateEntityException(EnrollmentModel.class, Arrays.asList(meetupId, userId), Arrays.asList("meetup", "user"));
         }
 
         enrollment.setMeetup(meetupService.findById(enrollmentCreationDto.getMeetupId()));

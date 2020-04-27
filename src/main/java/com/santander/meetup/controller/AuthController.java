@@ -1,9 +1,9 @@
 package com.santander.meetup.controller;
 
-import com.santander.meetup.constant.AuthEndpoint;
 import com.santander.meetup.dto.request.SignInDto;
 import com.santander.meetup.dto.request.SignUpDto;
 import com.santander.meetup.dto.response.UserDto;
+import com.santander.meetup.endpoint.AuthEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.service.AuthService;
 import io.swagger.annotations.Api;

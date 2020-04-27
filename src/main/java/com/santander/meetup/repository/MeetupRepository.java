@@ -19,6 +19,7 @@ public interface MeetupRepository extends JpaRepository<MeetupModel, Long> {
     @EntityGraph(attributePaths = {"enrolledUsers"})
     Iterable<MeetupModel> findAllWithInscribedUsersByOwnerId(Long ownerId);
 
+    @EntityGraph(attributePaths = {"enrolledUsers"})
     Iterable<MeetupModel> findAllByEnrolledUsersUserId(Long userId);
 
     boolean existsById(Long id);

@@ -3,7 +3,7 @@ package com.santander.meetup.config;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.santander.meetup.constant.AuthEndpoint;
+import com.santander.meetup.endpoint.AuthEndpoint;
 import com.santander.meetup.exceptions.ApiError;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +139,7 @@ public class SwaggerConfig {
         return Arrays.asList(
                 createResponseMessage(HttpStatus.OK, "Successful operation"),
                 createResponseMessage(HttpStatus.CREATED, "Resource created successfully"),
+                createErrorResponseMessage(HttpStatus.BAD_REQUEST, "The server cannot or will not process the request due to an apparent client error"),
                 createErrorResponseMessage(HttpStatus.UNAUTHORIZED, "You are not authorized to view the resource"),
                 createErrorResponseMessage(HttpStatus.FORBIDDEN, "Accessing the resource you were trying to reach is forbidden"),
                 createErrorResponseMessage(HttpStatus.NOT_FOUND, "The resource you were trying to reach is not found"),

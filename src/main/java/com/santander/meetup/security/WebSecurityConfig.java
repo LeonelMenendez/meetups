@@ -1,8 +1,9 @@
 package com.santander.meetup.security;
 
-import com.santander.meetup.constant.AuthEndpoint;
-import com.santander.meetup.constant.EnrollmentEndpoint;
-import com.santander.meetup.constant.MeetupEndpoint;
+import com.santander.meetup.endpoint.AuthEndpoint;
+import com.santander.meetup.endpoint.EnrollmentEndpoint;
+import com.santander.meetup.endpoint.InvitationEndpoint;
+import com.santander.meetup.endpoint.MeetupEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,6 +65,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_ENROLLED).hasRole(Role.USER.getName())
                     .antMatchers(HttpMethod.POST, EnrollmentEndpoint.ROOT).hasRole(Role.USER.getName())
                     .antMatchers(HttpMethod.POST, EnrollmentEndpoint.ROOT + EnrollmentEndpoint.ANT_CHECK_IN).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.GET, InvitationEndpoint.ANT_ROOT).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.POST, InvitationEndpoint.ROOT).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.PATCH, InvitationEndpoint.ROOT + InvitationEndpoint.ANT_INVITATION).hasRole(Role.USER.getName())
                 .anyRequest().authenticated().and()
                 .exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler).and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()

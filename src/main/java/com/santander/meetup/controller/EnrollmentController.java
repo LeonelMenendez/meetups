@@ -1,8 +1,8 @@
 package com.santander.meetup.controller;
 
-import com.santander.meetup.constant.EnrollmentEndpoint;
 import com.santander.meetup.dto.request.EnrollmentCreationDto;
 import com.santander.meetup.dto.response.EnrollmentDto;
+import com.santander.meetup.endpoint.EnrollmentEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.service.EnrollmentService;

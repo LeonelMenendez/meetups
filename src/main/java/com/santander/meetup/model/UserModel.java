@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,6 +65,7 @@ public class UserModel implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<EnrollmentModel> meetups = new HashSet<>();
 
+    @NotNull
     @Enumerated(EnumType.ORDINAL)
     private Role role;
 

@@ -1,8 +1,8 @@
 package com.santander.meetup.controller;
 
-import com.santander.meetup.constant.MeetupEndpoint;
 import com.santander.meetup.dto.request.MeetupCreationDto;
 import com.santander.meetup.dto.response.MeetupDto;
+import com.santander.meetup.endpoint.MeetupEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.service.MeetupService;
@@ -83,12 +83,12 @@ public class MeetupController {
     }
 
     /**
-     * Retrieves the meetups to which the user is enrolled to.
+     * Retrieves the meetups in which the given user is enrolled.
      *
      * @param userId the user id of the meetups to retrieve.
-     * @return a list of meetups to which the user is enrolled to.
+     * @return a list of meetups in which the given user is enrolled.
      */
-    @ApiOperation(value = "Retrieves the meetups to which the user is enrolled to")
+    @ApiOperation(value = "Retrieves the meetups in which the given user is enrolled")
     @GetMapping(MeetupEndpoint.ENROLLED)
     public ResponseEntity<List<MeetupDto>> getEnrolledMeetups(@Valid @RequestParam long userId) {
         return new ResponseEntity<>(meetupService.getEnrolledMeetups(userId), HttpStatus.OK);

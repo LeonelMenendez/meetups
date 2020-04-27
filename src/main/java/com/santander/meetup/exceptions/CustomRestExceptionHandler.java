@@ -201,6 +201,21 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Triggered when assigning a value to an attribute is not allowed.
+     *
+     * @param ex the exception to handle.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ExceptionHandler({ValueNotAllowedException.class})
+    public ResponseEntity<Object> handleDuplicateResource(ValueNotAllowedException ex) {
+        String message = "Value not allowed";
+        String error = "The " + ex.getAttribute() + " {" + ex.getValue() + "} is not allowed because " + ex.getReason();
+
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message, error);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    /**
      * Default Handler. It deals with all other exceptions that don't have specific handlers.
      *
      * @param ex the exception to handle.

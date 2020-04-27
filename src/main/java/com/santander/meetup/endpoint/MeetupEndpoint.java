@@ -1,4 +1,4 @@
-package com.santander.meetup.constant;
+package com.santander.meetup.endpoint;
 
 public class MeetupEndpoint {
     public static final String ROOT = "/meetups";
