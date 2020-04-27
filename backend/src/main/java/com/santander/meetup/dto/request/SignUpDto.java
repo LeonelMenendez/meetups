@@ -25,9 +25,5 @@ public class SignUpDto implements Serializable {
     @ApiModelProperty(required = true)
     private String password;
 
-    @NotBlank
-    @ApiModelProperty(required = true)
-    private String confirmPassword;
-
     private boolean admin;
 }

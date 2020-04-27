@@ -1,0 +1,9 @@
+@import '_sign';
+
+@include sign-template();
+
+.avatar {
+  height: 6em;
+  margin-bottom: 1em;
+  @include prefix(border-radius, 50%);
+}

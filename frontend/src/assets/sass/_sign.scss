@@ -1,0 +1,76 @@
+@import '_mixins';
+
+@mixin sign-template() {
+  .sign-container {
+    width: 100%;
+    max-width: 60vh;
+    margin: 1rem;
+    background: white;
+    opacity: 0.9;
+    @include prefix(border-radius, 1.5rem);
+    @include prefix(transition, opacity 250ms ease-in-out);
+
+    &:hover,
+    &:focus-within {
+      opacity: 1;
+    }
+
+    .sign-content {
+      padding: 2.5rem 2.5rem 0em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .sign-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .sign-button {
+          width: 100%;
+          margin: 2em 0;
+          border: 1px solid rgba(0, 0, 0, 0.3);
+          background-color: white;
+          color: black;
+          font-size: 0.8em;
+          font-weight: bold;
+          padding: 1em 3em;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          @include prefix(border-radius, 1em);
+          @include prefix(transition, transform 200ms ease-in, border 200ms ease-in);
+
+          &:hover {
+            border: 1px solid rgba(0, 0, 0, 1);
+          }
+
+          &:active {
+            @include prefix(transform, scale(0.95));
+          }
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+    }
+
+    .sign-footer {
+      padding: 1.2em;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8em;
+
+      .link {
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

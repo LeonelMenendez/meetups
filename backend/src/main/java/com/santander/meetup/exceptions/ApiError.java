@@ -31,7 +31,7 @@ public class ApiError implements Serializable {
     private String message;
 
     /**
-     * List of detail errors.
+     * List of detailed errors.
      */
     private List<String> errors;
 

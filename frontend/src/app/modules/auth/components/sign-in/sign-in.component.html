@@ -1,0 +1,39 @@
+<div class="main-container background">
+  <div class="sign-container">
+    <div class="sign-content">
+      <img src="../../../../../assets/images/avatar.png" alt="avatar" class="avatar" />
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form sign-form">
+        <mat-form-field class="input">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="text" />
+          <mat-error>
+            {{ emailError }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="input">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword"
+          >
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error>
+            {{ passwordError }}
+          </mat-error>
+        </mat-form-field>
+
+        <button class="sign-button">Sign In</button>
+      </form>
+    </div>
+    <div class="sign-footer">
+      <a routerLink="../signup" class="link">Sign Up</a>
+      <a href="#" class="link">Forgot your password?</a>
+    </div>
+  </div>
+</div>
