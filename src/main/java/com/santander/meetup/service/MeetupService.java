@@ -1,7 +1,8 @@
 package com.santander.meetup.service;
 
 import com.santander.meetup.dto.request.MeetupCreationDto;
-import com.santander.meetup.dto.response.MeetupDto;
+import com.santander.meetup.dto.response.MeetupAdminDto;
+import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.MeetupModel;
@@ -70,7 +71,7 @@ public interface MeetupService {
      * @throws DuplicateEntityException if the meetup already exists.
      * @throws EntityNotFoundException  if the given owner user wasn't found.
      */
-    MeetupDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException;
+    MeetupUserDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Calculates the amount of beer cases needed for the given meetup.
@@ -105,7 +106,7 @@ public interface MeetupService {
      * @param ownerId the owner id of the meetups to retrieve.
      * @return a list of the meetups created by the given user.
      */
-    List<MeetupDto> getCreatedMeetups(long ownerId);
+    List<MeetupAdminDto> getCreatedMeetups(long ownerId);
 
     /**
      * Retrieves the meetups in which the given user is enrolled.
@@ -113,5 +114,5 @@ public interface MeetupService {
      * @param userId the user id of the meetups to retrieve.
      * @return a list of meetups in which the given user is enrolled.
      */
-    List<MeetupDto> getEnrolledMeetups(long userId);
+    List<MeetupUserDto> getEnrolledMeetups(long userId);
 }

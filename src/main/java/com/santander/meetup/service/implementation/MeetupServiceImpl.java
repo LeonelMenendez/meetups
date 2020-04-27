@@ -1,7 +1,8 @@
 package com.santander.meetup.service.implementation;
 
 import com.santander.meetup.dto.request.MeetupCreationDto;
-import com.santander.meetup.dto.response.MeetupDto;
+import com.santander.meetup.dto.response.MeetupAdminDto;
+import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.MeetupModel;
@@ -60,7 +61,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public MeetupDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
+    public MeetupUserDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         MeetupModel meetup = modelMapper.map(meetupCreationDto, MeetupModel.class);
         long ownerId = meetupCreationDto.getOwnerId();
         LocalDate day = meetup.getDay();
@@ -71,7 +72,7 @@ public class MeetupServiceImpl implements MeetupService {
 
         meetup.setOwner(userService.findById(ownerId));
         meetupRepository.save(meetup);
-        return toDto(meetup);
+        return toUserDto(meetup);
     }
 
     @Override
@@ -101,30 +102,31 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public List<MeetupDto> getCreatedMeetups(long ownerId) {
+    public List<MeetupAdminDto> getCreatedMeetups(long ownerId) {
         Iterable<MeetupModel> meetups = findAllWithInscribedUsersByOwnerId(ownerId);
-        List<MeetupDto> meetupDtos = new ArrayList<>();
-        meetups.forEach(meetup -> meetupDtos.add(toDtoWithBeerCasesNeeded(meetup)));
-        return meetupDtos;
+        List<MeetupAdminDto> meetupAdminDtos = new ArrayList<>();
+        meetups.forEach(meetup -> meetupAdminDtos.add(toAdminDto(meetup)));
+        return meetupAdminDtos;
     }
 
     @Override
-    public List<MeetupDto> getEnrolledMeetups(long userId) {
+    public List<MeetupUserDto> getEnrolledMeetups(long userId) {
         Iterable<MeetupModel> meetups = findAllByEnrolledUsersUserId(userId);
-        List<MeetupDto> meetupDtos = new ArrayList<>();
-        meetups.forEach(meetup -> meetupDtos.add(toDto(meetup)));
-        return meetupDtos;
+        List<MeetupUserDto> meetupUserDtos = new ArrayList<>();
+        meetups.forEach(meetup -> meetupUserDtos.add(toUserDto(meetup)));
+        return meetupUserDtos;
     }
 
-    private MeetupDto toDto(MeetupModel meetup) {
-        MeetupDto meetupDto = modelMapper.map(meetup, MeetupDto.class);
-        meetupDto.setOwnerId(meetup.getOwner().getId());
-        return meetupDto;
+    private MeetupUserDto toUserDto(MeetupModel meetup) {
+        MeetupUserDto meetupUserDto = modelMapper.map(meetup, MeetupUserDto.class);
+        meetupUserDto.setOwnerId(meetup.getOwner().getId());
+        return meetupUserDto;
     }
 
-    private MeetupDto toDtoWithBeerCasesNeeded(MeetupModel meetup) {
-        MeetupDto meetupDto = toDto(meetup);
-        meetupDto.setBeerCasesNeeded(calculateNeededBeerCases(meetup.getTemperature(), meetup.getEnrolledUsers().size()));
-        return meetupDto;
+    private MeetupAdminDto toAdminDto(MeetupModel meetup) {
+        MeetupAdminDto meetupAdminDto = modelMapper.map(meetup, MeetupAdminDto.class);
+        meetupAdminDto.setOwnerId(meetup.getOwner().getId());
+        meetupAdminDto.setBeerCasesNeeded(calculateNeededBeerCases(meetup.getTemperature(), meetup.getEnrolledUsers().size()));
+        return meetupAdminDto;
     }
 }

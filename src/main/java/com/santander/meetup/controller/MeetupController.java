@@ -1,7 +1,8 @@
 package com.santander.meetup.controller;
 
 import com.santander.meetup.dto.request.MeetupCreationDto;
-import com.santander.meetup.dto.response.MeetupDto;
+import com.santander.meetup.dto.response.MeetupAdminDto;
+import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.endpoint.MeetupEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
@@ -40,7 +41,7 @@ public class MeetupController {
      */
     @ApiOperation(value = "Creates a new meetup")
     @PostMapping()
-    public ResponseEntity<MeetupDto> create(@Valid @RequestBody MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
+    public ResponseEntity<MeetupUserDto> create(@Valid @RequestBody MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(meetupService.create(meetupCreationDto), HttpStatus.CREATED);
     }
 
@@ -78,7 +79,7 @@ public class MeetupController {
      */
     @ApiOperation(value = "Retrieves the meetups created by the given user")
     @GetMapping(MeetupEndpoint.CREATED)
-    public ResponseEntity<List<MeetupDto>> getCreatedMeetups(@Valid @RequestParam long ownerId) {
+    public ResponseEntity<List<MeetupAdminDto>> getCreatedMeetups(@Valid @RequestParam long ownerId) {
         return new ResponseEntity<>(meetupService.getCreatedMeetups(ownerId), HttpStatus.OK);
     }
 
@@ -90,7 +91,7 @@ public class MeetupController {
      */
     @ApiOperation(value = "Retrieves the meetups in which the given user is enrolled")
     @GetMapping(MeetupEndpoint.ENROLLED)
-    public ResponseEntity<List<MeetupDto>> getEnrolledMeetups(@Valid @RequestParam long userId) {
+    public ResponseEntity<List<MeetupUserDto>> getEnrolledMeetups(@Valid @RequestParam long userId) {
         return new ResponseEntity<>(meetupService.getEnrolledMeetups(userId), HttpStatus.OK);
     }
 }
