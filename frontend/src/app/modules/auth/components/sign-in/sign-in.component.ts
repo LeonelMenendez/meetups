@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ISignInRequest } from 'src/app/shared/models/auth';
+import { IUser } from 'src/app/shared/models/user';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,18 +13,26 @@ import { ISignInRequest } from 'src/app/shared/models/auth';
 export class SignInComponent implements OnInit {
   form: FormGroup;
   hidePassword: boolean = true;
+  returnUrl: string;
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) {
+    if (this.authService.currentUserValue) {
+      this.router.navigate(['/']);
+    }
+  }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   get email(): AbstractControl {
@@ -52,9 +61,10 @@ export class SignInComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-
-    this.authService.signIn(this.signInRequest).subscribe((res) => {
-      this.router.navigate(['/home']);
+    debugger;
+    this.authService.signIn(this.signInRequest).subscribe((user: IUser) => {
+      this.authService.currentUserValue = user;
+      this.router.navigate([this.returnUrl]);
     });
   }
 

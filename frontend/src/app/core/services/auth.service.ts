@@ -1,15 +1,32 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ISignInRequest, ISignUpRequest } from 'src/app/shared/models/auth';
 import { IUser } from 'src/app/shared/models/user';
 import { environment } from 'src/environments/environment';
+
+import { getCurrentUser, removeCurrentUser, setCurrentUser } from '../storage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private httpClient: HttpClient) {}
+  currentUser: Observable<IUser>;
+  private currentUserSubject: BehaviorSubject<IUser>;
+
+  constructor(private httpClient: HttpClient) {
+    this.currentUserSubject = new BehaviorSubject<IUser>(getCurrentUser());
+    this.currentUser = this.currentUserSubject.asObservable();
+  }
+
+  get currentUserValue(): IUser {
+    return this.currentUserSubject.value;
+  }
+
+  set currentUserValue(user: IUser) {
+    setCurrentUser(user);
+    this.currentUserSubject.next(user);
+  }
 
   signUp(body: ISignUpRequest): Observable<IUser> {
     return this.httpClient.post<IUser>(`${environment.API_URL}/auth/sign-up`, body);
@@ -17,5 +34,10 @@ export class AuthService {
 
   signIn(body: ISignInRequest): Observable<IUser> {
     return this.httpClient.post<IUser>(`${environment.API_URL}/auth/sign-in`, body);
+  }
+
+  signOut() {
+    removeCurrentUser();
+    this.currentUserSubject.next(null);
   }
 }
