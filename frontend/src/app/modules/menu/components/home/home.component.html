@@ -1,0 +1,6 @@
+<ng-template [ngxPermissionsOnly]="Role.ADMIN">
+  <app-admin-home></app-admin-home>
+</ng-template>
+<ng-template [ngxPermissionsOnly]="Role.USER">
+  <app-user-home></app-user-home>
+</ng-template>

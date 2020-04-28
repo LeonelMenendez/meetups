@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ISignInRequest, ISignUpRequest } from 'src/app/shared/models/auth';
 import { IUser } from 'src/app/shared/models/user';
@@ -14,7 +15,7 @@ export class AuthService {
   currentUser: Observable<IUser>;
   private currentUserSubject: BehaviorSubject<IUser>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<IUser>(getCurrentUser());
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -39,5 +40,6 @@ export class AuthService {
   signOut() {
     removeCurrentUser();
     this.currentUserSubject.next(null);
+    this.router.navigate(['/signin']);
   }
 }

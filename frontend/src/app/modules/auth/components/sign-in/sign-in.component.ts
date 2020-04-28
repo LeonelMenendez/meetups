@@ -61,7 +61,7 @@ export class SignInComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    debugger;
+
     this.authService.signIn(this.signInRequest).subscribe((user: IUser) => {
       this.authService.currentUserValue = user;
       this.router.navigate([this.returnUrl]);

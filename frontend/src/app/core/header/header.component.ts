@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Role } from 'src/app/shared/enums/role';
 
 import { AuthService } from '../services/auth.service';
 
@@ -9,12 +9,12 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
+  Role = Role;
   toggleNavbar = true;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   signOut() {
     this.authService.signOut();
-    this.router.navigate(['/sign-in']);
   }
 }

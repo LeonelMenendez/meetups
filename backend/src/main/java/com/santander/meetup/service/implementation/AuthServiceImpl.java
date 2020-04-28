@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
             UserDto userDTO = modelMapper.map(userDetails, UserDto.class);
             userDTO.setToken(jwtUtil.generateToken(userDetails));
             return userDTO;
-        } catch (BadCredentialsException e) {
+        } catch (AuthenticationException e) {
             throw new BadCredentialsException("The email or password is incorrect");
         }
     }

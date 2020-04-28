@@ -1,13 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
-import { MatModule } from '../shared/modules/mat/mat.module';
+import { SharedModule } from '../shared/shared.module';
 import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [HeaderComponent],
-  imports: [CommonModule, MatModule, NgbCollapseModule],
+  imports: [SharedModule, RouterModule, NgxPermissionsModule],
   exports: [HeaderComponent],
 })
 export class CoreModule {}

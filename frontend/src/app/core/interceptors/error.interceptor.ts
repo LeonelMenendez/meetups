@@ -1,24 +1,19 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { HttpStatusCode } from 'src/app/shared/enums/http-status-code';
-
-import { AuthService } from '../services/auth.service';
+import { IApiError } from 'src/app/shared/models/http-error';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private toastr: ToastrService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((err) => {
-        if (err.status === HttpStatusCode.UNAUTHORIZED) {
-          this.authService.signOut();
-          location.reload(true);
-        }
-
-        const error = err.error.message || err.statusText;
+        const error: IApiError = err.error;
+        this.toastr.error(error.errors[0], error.message);
         return throwError(error);
       })
     );

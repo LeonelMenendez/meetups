@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { FormValidatorService } from 'src/app/core/services/form-validator.service';
 import { ISignUpRequest } from 'src/app/shared/models/auth';
@@ -19,7 +20,8 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private formValidator: FormValidatorService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +85,17 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  submit() {
+    if (!this.form.valid) {
+      return;
+    }
+
+    this.authService.signUp(this.signUpRequest).subscribe((res) => {
+      this.toastr.success('User created successfully');
+      this.router.navigate(['../signin']);
+    });
+  }
+
   private get signUpRequest(): ISignUpRequest {
     return {
       name: this.name.value,
@@ -90,15 +103,5 @@ export class SignUpComponent implements OnInit {
       password: this.password.value,
       admin: this.admin.value,
     };
-  }
-
-  submit() {
-    if (!this.form.valid) {
-      return;
-    }
-
-    this.authService.signUp(this.signUpRequest).subscribe((res) => {
-      this.router.navigate(['../signin']);
-    });
   }
 }
