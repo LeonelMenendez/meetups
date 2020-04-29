@@ -48,8 +48,7 @@ public interface EnrollmentService {
      * Makes the check-in of the user associated to the given enrollment.
      *
      * @param enrollmentId the enrollment id for which will be made the check-in.
-     * @return the updated enrollment.
      * @throws EntityNotFoundException if the enrollment wasn't found.
      */
-    EnrollmentDto checkIn(long enrollmentId) throws EntityNotFoundException;
+    void checkIn(long enrollmentId) throws EntityNotFoundException;
 }

@@ -1,4 +1,4 @@
-<h1 class="mb-4">My meetups</h1>
+<h1 class="title">My meetups</h1>
 
 <mat-expansion-panel>
   <mat-expansion-panel-header>
@@ -46,7 +46,7 @@
     <td mat-cell *matCellDef="let element">{{ element.beerCasesNeeded }}</td>
   </ng-container>
 
-  <ng-container matColumnDef="action" stickyEnd>
+  <ng-container matColumnDef="actions" stickyEnd>
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
       <a mat-icon-button aria-label="Invite" (click)="openDialog(element)">

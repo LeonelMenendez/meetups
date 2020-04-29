@@ -114,6 +114,10 @@ public class InvitationServiceImpl implements InvitationService {
         InvitationDto invitationDto = modelMapper.map(invitation, InvitationDto.class);
         invitationDto.setMeetupId(invitation.getMeetup().getId());
         invitationDto.setUserId(invitation.getUser().getId());
+        invitationDto.setMeetupOwnerName(invitation.getMeetup().getOwner().getName());
+        invitationDto.setMeetupOwnerEmail(invitation.getMeetup().getOwner().getEmail());
+        invitationDto.setMeetupDay(invitation.getMeetup().getDay());
+        invitationDto.setMeetupTemperature(invitation.getMeetup().getTemperature());
         return invitationDto;
     }
 }

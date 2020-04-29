@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,12 +46,12 @@ public class EnrollmentController {
      * Makes the check-in of the user associated to the given enrollment.
      *
      * @param enrollmentId the enrollment id for which will be make the check-in.
-     * @return the updated enrollment.
      * @throws EntityNotFoundException if the given enrollment wasn't found.
      */
     @ApiOperation(value = "Makes the check-in of the user associated to the given enrollment")
-    @PostMapping(EnrollmentEndpoint.CHECK_IN)
-    public ResponseEntity<EnrollmentDto> checkIn(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException {
-        return new ResponseEntity<>(enrollmentService.checkIn(enrollmentId), HttpStatus.OK);
+    @PatchMapping(EnrollmentEndpoint.CHECK_IN)
+    public ResponseEntity<Void> checkIn(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException {
+        enrollmentService.checkIn(enrollmentId);
+        return ResponseEntity.noContent().build();
     }
 }

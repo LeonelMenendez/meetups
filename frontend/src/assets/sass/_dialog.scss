@@ -1,0 +1,11 @@
+@import '_variables';
+
+.dialog-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin: 0.3em;
+  }
+}

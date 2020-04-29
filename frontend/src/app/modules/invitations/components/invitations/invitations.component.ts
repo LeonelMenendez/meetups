@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { InvitationService } from 'src/app/core/services/invitation.service';
+import { InvitationStatus } from 'src/app/shared/enums/invitation-status';
+import { IInvitationResponse } from 'src/app/shared/models/invitation';
+
+import { InvitationsDataSource } from '../../data-sources/invitations.data-source';
 
 @Component({
   selector: 'app-invitations',
@@ -6,7 +11,30 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./invitations.component.scss'],
 })
 export class InvitationsComponent implements OnInit {
-  constructor() {}
+  InvitationStatus = InvitationStatus;
+  invitations: IInvitationResponse[];
+  displayedColumns = ['day', 'owner', 'temperature', 'status'];
+  invitationsDataSource: InvitationsDataSource;
 
-  ngOnInit(): void {}
+  constructor(private invitationService: InvitationService) {}
+
+  ngOnInit(): void {
+    this.invitationsDataSource = new InvitationsDataSource(this.invitationService);
+    this.invitationsDataSource.loadInvitations();
+  }
+
+  acceptInvitation(element: IInvitationResponse) {
+    this.changeInvitationStatus(element, InvitationStatus.ACCEPTED);
+  }
+
+  declineInvitation(element: IInvitationResponse) {
+    this.changeInvitationStatus(element, InvitationStatus.DECLINED);
+  }
+
+  changeInvitationStatus(element: IInvitationResponse, status: InvitationStatus) {
+    this.invitationService.changeStatus(element.id, status).subscribe(() => {
+      element.status = status;
+      this.invitationsDataSource.updateInvitation(element);
+    });
+  }
 }

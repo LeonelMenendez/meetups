@@ -19,7 +19,7 @@ import { InviteDialogComponent } from '../invite-dialog/invite-dialog.component'
 export class AdminHomeComponent implements OnInit {
   form: FormGroup;
   users: IUser[];
-  displayedColumns = ['day', 'temperature', 'beerCasesNeeded', 'action'];
+  displayedColumns = ['day', 'temperature', 'beerCasesNeeded', 'actions'];
   meetupsDataSource: MeetupsDataSource;
 
   constructor(

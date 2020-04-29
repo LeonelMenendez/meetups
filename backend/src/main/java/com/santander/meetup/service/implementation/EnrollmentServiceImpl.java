@@ -62,11 +62,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public EnrollmentDto checkIn(long enrollmentId) throws EntityNotFoundException {
+    public void checkIn(long enrollmentId) throws EntityNotFoundException {
         EnrollmentModel enrollment = findById(enrollmentId);
         enrollment.setCheckedIn(true);
         enrollmentRepository.save(enrollment);
-        return toDto(enrollment);
     }
 
     private EnrollmentDto toDto(EnrollmentModel enrollment) {
