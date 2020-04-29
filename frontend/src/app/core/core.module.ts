@@ -1,5 +1,6 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
@@ -11,7 +12,7 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 
 @NgModule({
   declarations: [HeaderComponent],
-  imports: [HttpClientModule, SharedModule, RouterModule, NgxPermissionsModule],
+  imports: [HttpClientModule, SharedModule, RouterModule, NgxPermissionsModule, FlexLayoutModule],
   exports: [HeaderComponent],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

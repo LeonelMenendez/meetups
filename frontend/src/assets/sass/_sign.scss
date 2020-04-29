@@ -1,6 +1,24 @@
 @import '_mixins';
 
 @mixin sign-template() {
+  .main-container {
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    min-width: 100vw;
+    font-size: 2.5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .background {
+    background-image: url(' ../../../../../assets/images/background.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
   .sign-container {
     width: 100%;
     max-width: 60vh;

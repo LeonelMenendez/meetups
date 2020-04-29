@@ -13,7 +13,7 @@ import { InvitationsDataSource } from '../../data-sources/invitations.data-sourc
 export class InvitationsComponent implements OnInit {
   InvitationStatus = InvitationStatus;
   invitations: IInvitationResponse[];
-  displayedColumns = ['day', 'owner', 'temperature', 'status'];
+  displayedColumns = ['day', 'temperature', 'status'];
   invitationsDataSource: InvitationsDataSource;
 
   constructor(private invitationService: InvitationService) {}

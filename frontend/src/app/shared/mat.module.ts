@@ -10,8 +10,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   imports: [
@@ -28,6 +30,8 @@ import { MatTableModule } from '@angular/material/table';
     MatDialogModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatToolbarModule,
   ],
   exports: [
     MatButtonModule,
@@ -43,6 +47,8 @@ import { MatTableModule } from '@angular/material/table';
     MatDialogModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatToolbarModule,
   ],
 })
 export class MatModule {}

@@ -1,2 +1,2 @@
 <app-header *ngIf="currentUser"></app-header>
-<router-outlet></router-outlet>
+<router-outlet *ngIf="!currentUser"></router-outlet>

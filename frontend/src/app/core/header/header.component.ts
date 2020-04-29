@@ -10,7 +10,6 @@ import { AuthService } from '../services/auth.service';
 })
 export class HeaderComponent {
   Role = Role;
-  toggleNavbar = true;
 
   constructor(private authService: AuthService) {}
 
