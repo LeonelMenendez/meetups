@@ -10,8 +10,12 @@ import com.santander.meetup.security.Role;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,6 +40,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> findAll(Role role) {
+        UserModel userExample = new UserModel();
+        userExample.setRole(role);
+        List<UserModel> users = userRepository.findAll(Example.of(userExample));
+
+        List<UserDto> userDtos = new ArrayList<>();
+        users.forEach(user -> userDtos.add(toDto(user)));
+        return userDtos;
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -56,6 +71,10 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
         userRepository.save(user);
+        return toDto(user);
+    }
+
+    private UserDto toDto(UserModel user) {
         return modelMapper.map(user, UserDto.class);
     }
 }

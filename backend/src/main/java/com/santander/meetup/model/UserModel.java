@@ -56,7 +56,7 @@ public class UserModel implements UserDetails {
     private String password;
 
     @CreatedDate
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)

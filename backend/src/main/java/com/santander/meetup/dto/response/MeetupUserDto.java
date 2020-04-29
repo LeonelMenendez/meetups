@@ -13,5 +13,7 @@ public class MeetupUserDto implements Serializable {
     private long id;
     private LocalDate day;
     private long ownerId;
+    private String ownerName;
+    private String ownerEmail;
     private double temperature;
 }

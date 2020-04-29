@@ -1,6 +1,7 @@
 package com.santander.meetup.service;
 
 import com.santander.meetup.dto.request.MeetupCreationDto;
+import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.dto.response.MeetupAdminDto;
 import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
@@ -71,7 +72,7 @@ public interface MeetupService {
      * @throws DuplicateEntityException if the meetup already exists.
      * @throws EntityNotFoundException  if the given owner user wasn't found.
      */
-    MeetupUserDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException;
+    MeetupAdminDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Calculates the amount of beer cases needed for the given meetup.
@@ -99,6 +100,17 @@ public interface MeetupService {
      * @throws EntityNotFoundException if the meetup wasn't found.
      */
     double getTemperature(long meetupId) throws EntityNotFoundException;
+
+    /**
+     * Creates a list of new invitations for the given meetup.
+     *
+     * @param meetupId the meetup id to which the invitations will be sent.
+     * @param userIds  a list with the user's ids that will be invited.
+     * @return the created invitations.
+     * @throws DuplicateEntityException if one of the given invitations already exists.
+     * @throws EntityNotFoundException  if the given meetup or user wasn't found.
+     */
+    List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Retrieves the meetups created by the given user.

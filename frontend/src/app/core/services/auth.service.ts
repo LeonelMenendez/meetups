@@ -12,10 +12,14 @@ import { getCurrentUser, removeCurrentUser, setCurrentUser } from '../storage';
   providedIn: 'root',
 })
 export class AuthService {
+  private END_POINT_BASE = `${environment.API_URL}/auth`;
+  private END_SIGN_UP = `${this.END_POINT_BASE}/sign-up`;
+  private END_SIGN_IN = `${this.END_POINT_BASE}/sign-in`;
+
   currentUser: Observable<IUser>;
   private currentUserSubject: BehaviorSubject<IUser>;
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<IUser>(getCurrentUser());
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -29,12 +33,12 @@ export class AuthService {
     this.currentUserSubject.next(user);
   }
 
-  signUp(body: ISignUpRequest): Observable<IUser> {
-    return this.httpClient.post<IUser>(`${environment.API_URL}/auth/sign-up`, body);
+  signUp(signUpRequest: ISignUpRequest): Observable<IUser> {
+    return this.http.post<IUser>(this.END_SIGN_UP, signUpRequest);
   }
 
-  signIn(body: ISignInRequest): Observable<IUser> {
-    return this.httpClient.post<IUser>(`${environment.API_URL}/auth/sign-in`, body);
+  signIn(signInRequest: ISignInRequest): Observable<IUser> {
+    return this.http.post<IUser>(this.END_SIGN_IN, signInRequest);
   }
 
   signOut() {

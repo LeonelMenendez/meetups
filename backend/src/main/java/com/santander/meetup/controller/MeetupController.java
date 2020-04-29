@@ -1,6 +1,7 @@
 package com.santander.meetup.controller;
 
 import com.santander.meetup.dto.request.MeetupCreationDto;
+import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.dto.response.MeetupAdminDto;
 import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.endpoint.MeetupEndpoint;
@@ -41,7 +42,7 @@ public class MeetupController {
      */
     @ApiOperation(value = "Creates a new meetup")
     @PostMapping()
-    public ResponseEntity<MeetupUserDto> create(@Valid @RequestBody MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
+    public ResponseEntity<MeetupAdminDto> create(@Valid @RequestBody MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(meetupService.create(meetupCreationDto), HttpStatus.CREATED);
     }
 
@@ -69,6 +70,22 @@ public class MeetupController {
     @GetMapping(MeetupEndpoint.TEMPERATURE)
     public ResponseEntity<Double> getTemperature(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
         return new ResponseEntity<>(meetupService.getTemperature(meetupId), HttpStatus.OK);
+    }
+
+    /**
+     * Creates a list of new invitations for the given meetup.
+     *
+     * @param meetupId the meetup id to which the invitations will be sent.
+     * @param userIds  a list with the user's ids that will be invited.
+     * @return the created invitations.
+     * @throws DuplicateEntityException if one of the given invitations already exists.
+     * @throws EntityNotFoundException  if the given meetup or user wasn't found.
+     */
+    @ApiOperation(value = "Creates a new list of invitations for the given meetup")
+    @PostMapping(MeetupEndpoint.INVITATIONS)
+    public ResponseEntity<List<InvitationDto>> create(@Valid @PathVariable long meetupId,
+                                                      @Valid @RequestBody List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
+        return new ResponseEntity<>(meetupService.create(meetupId, userIds), HttpStatus.CREATED);
     }
 
     /**

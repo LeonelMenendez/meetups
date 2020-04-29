@@ -55,11 +55,11 @@ public class InvitationServiceImpl implements InvitationService {
         meetup.setId(meetupId);
         user.setId(userId);
 
-        InvitationModel invitationParams = new InvitationModel();
-        invitationParams.setMeetup(meetup);
-        invitationParams.setUser(user);
-        invitationParams.setStatus(status);
-        List<InvitationModel> invitations = invitationRepository.findAll(Example.of(invitationParams));
+        InvitationModel invitationExample = new InvitationModel();
+        invitationExample.setMeetup(meetup);
+        invitationExample.setUser(user);
+        invitationExample.setStatus(status);
+        List<InvitationModel> invitations = invitationRepository.findAll(Example.of(invitationExample));
 
         List<InvitationDto> invitationDtos = new ArrayList<>();
         invitations.forEach(invitation -> invitationDtos.add(toDto(invitation)));

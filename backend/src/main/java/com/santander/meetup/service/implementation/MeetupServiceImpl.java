@@ -1,12 +1,15 @@
 package com.santander.meetup.service.implementation;
 
+import com.santander.meetup.dto.request.InvitationCreationDto;
 import com.santander.meetup.dto.request.MeetupCreationDto;
+import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.dto.response.MeetupAdminDto;
 import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.MeetupModel;
 import com.santander.meetup.repository.MeetupRepository;
+import com.santander.meetup.service.InvitationService;
 import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -26,6 +29,9 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private InvitationService invitationService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -61,7 +67,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public MeetupUserDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
+    public MeetupAdminDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         MeetupModel meetup = modelMapper.map(meetupCreationDto, MeetupModel.class);
         long ownerId = meetupCreationDto.getOwnerId();
         LocalDate day = meetup.getDay();
@@ -72,7 +78,7 @@ public class MeetupServiceImpl implements MeetupService {
 
         meetup.setOwner(userService.findById(ownerId));
         meetupRepository.save(meetup);
-        return toUserDto(meetup);
+        return toAdminDto(meetup);
     }
 
     @Override
@@ -102,6 +108,20 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
+    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
+        List<InvitationDto> invitationDtos = new ArrayList<>();
+
+        for (Long userId : userIds) {
+            InvitationCreationDto invitationCreationDto = new InvitationCreationDto();
+            invitationCreationDto.setMeetupId(meetupId);
+            invitationCreationDto.setUserId(userId);
+            invitationDtos.add(invitationService.create(invitationCreationDto));
+        }
+
+        return invitationDtos;
+    }
+
+    @Override
     public List<MeetupAdminDto> getCreatedMeetups(long ownerId) {
         Iterable<MeetupModel> meetups = findAllWithInscribedUsersByOwnerId(ownerId);
         List<MeetupAdminDto> meetupAdminDtos = new ArrayList<>();
@@ -120,12 +140,16 @@ public class MeetupServiceImpl implements MeetupService {
     private MeetupUserDto toUserDto(MeetupModel meetup) {
         MeetupUserDto meetupUserDto = modelMapper.map(meetup, MeetupUserDto.class);
         meetupUserDto.setOwnerId(meetup.getOwner().getId());
+        meetupUserDto.setOwnerName(meetup.getOwner().getName());
+        meetupUserDto.setOwnerEmail(meetup.getOwner().getEmail());
         return meetupUserDto;
     }
 
     private MeetupAdminDto toAdminDto(MeetupModel meetup) {
         MeetupAdminDto meetupAdminDto = modelMapper.map(meetup, MeetupAdminDto.class);
         meetupAdminDto.setOwnerId(meetup.getOwner().getId());
+        meetupAdminDto.setOwnerName(meetup.getOwner().getName());
+        meetupAdminDto.setOwnerEmail(meetup.getOwner().getEmail());
         meetupAdminDto.setBeerCasesNeeded(calculateNeededBeerCases(meetup.getTemperature(), meetup.getEnrolledUsers().size()));
         return meetupAdminDto;
     }

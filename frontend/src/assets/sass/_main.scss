@@ -7,6 +7,16 @@
   font-family: $body-font;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $title-font;
+  margin: 1rem 0;
+}
+
 a {
   cursor: pointer;
 }
@@ -19,6 +29,21 @@ a {
 .link:active {
   color: inherit;
   text-decoration: none;
+}
+
+.table {
+  width: 100%;
+  margin: 0.2rem 0;
+}
+
+.dialog-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin: 0.3em;
+  }
 }
 
 .main-container {
@@ -37,4 +62,11 @@ a {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.spinner-container {
+  width: 100%;
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
 }
