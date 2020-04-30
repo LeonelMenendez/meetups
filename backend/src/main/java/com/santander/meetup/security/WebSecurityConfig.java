@@ -18,9 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.santander.meetup.config.SwaggerConfig.SWAGGER_AUTH_WHITELIST;
 
@@ -65,14 +62,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                     /************ USER ************/
                     .antMatchers(HttpMethod.GET, UserEndpoint.ANT_ROOT).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.GET, UserEndpoint.ROOT + UserEndpoint.ANT_MEETUPS_ENROLLMENTS).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.GET, UserEndpoint.ROOT + UserEndpoint.ANT_MEETUPS_CREATED).hasRole(Role.ADMIN.getName())
+                    .antMatchers(HttpMethod.GET, UserEndpoint.ROOT + UserEndpoint.ANT_MEETUPS_ENROLLED).hasRole(Role.USER.getName())
 
                     /************ MEETUP ************/
                     .antMatchers(HttpMethod.POST, MeetupEndpoint.ROOT).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_BEER_CASES).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_TEMPERATURE).hasAnyRole(Role.USER.getName(), Role.ADMIN.getName())
                     .antMatchers(HttpMethod.POST, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_INVITATIONS).hasRole(Role.ADMIN.getName())
-                    .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_CREATED).hasRole(Role.ADMIN.getName())
-                    .antMatchers(HttpMethod.GET, MeetupEndpoint.ROOT + MeetupEndpoint.ANT_ENROLLED).hasRole(Role.USER.getName())
 
                     /************ ENROLLMENT ************/
                     .antMatchers(HttpMethod.POST, EnrollmentEndpoint.ROOT).hasRole(Role.USER.getName())

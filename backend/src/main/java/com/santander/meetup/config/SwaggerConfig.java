@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.santander.meetup.security.JwtUtil.HEADER_AUTHORIZACION_KEY;
+import static com.santander.meetup.security.JwtUtil.HEADER_AUTHORIZATION_KEY;
 
 @Configuration
 @EnableSwagger2
@@ -94,7 +94,7 @@ public class SwaggerConfig {
      * @return a new api key authorization.
      */
     private ApiKey apiKey() {
-        return new ApiKey(HEADER_AUTHORIZACION_KEY, HEADER_AUTHORIZACION_KEY, "header");
+        return new ApiKey(HEADER_AUTHORIZATION_KEY, HEADER_AUTHORIZATION_KEY, "header");
     }
 
     /**
@@ -103,7 +103,7 @@ public class SwaggerConfig {
      * @return the security scope.
      */
     private List<SecurityReference> jwtAuthReference() {
-        return Arrays.asList(new SecurityReference(HEADER_AUTHORIZACION_KEY, new AuthorizationScope[0]));
+        return Arrays.asList(new SecurityReference(HEADER_AUTHORIZATION_KEY, new AuthorizationScope[0]));
     }
 
     /**

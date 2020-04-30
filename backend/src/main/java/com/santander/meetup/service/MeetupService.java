@@ -29,7 +29,7 @@ public interface MeetupService {
      * @return a meetup with the given id and the enrolled users to it.
      * @throws EntityNotFoundException if the meetup wasn't found.
      */
-    MeetupModel findWithInscribedUsersById(Long id) throws EntityNotFoundException;
+    MeetupModel findByIdWithEnrolledUsers(Long id) throws EntityNotFoundException;
 
     /**
      * Finds all the meetups by owner id with the enrolled users to it.
@@ -37,7 +37,7 @@ public interface MeetupService {
      * @param ownerId the owner id to be found.
      * @return a list of meetups with the given owner id and the enrolled users to it.
      */
-    Iterable<MeetupModel> findAllWithInscribedUsersByOwnerId(Long ownerId);
+    Iterable<MeetupModel> findAllByOwnerWithEnrolledUsers(Long ownerId);
 
     /**
      * Finds all the meetups to which the user is enrolled to.
@@ -45,7 +45,7 @@ public interface MeetupService {
      * @param userId the user id to be found.
      * @return a list of meetups to which the user is enrolled to.
      */
-    Iterable<MeetupModel> findAllByEnrolledUsersUserId(Long userId);
+    Iterable<MeetupModel> findAllByUser(Long userId);
 
     /**
      * Determines if a meetup already exists by the given id.
@@ -62,7 +62,7 @@ public interface MeetupService {
      * @param day     the day to be found.
      * @return {@code true} if the meetup exists. {@code false} otherwise.
      */
-    boolean existsByOwnerIdAndDay(Long ownerId, LocalDate day);
+    boolean existsByOwnerAndDay(Long ownerId, LocalDate day);
 
     /**
      * Creates a new meetup.
@@ -73,6 +73,17 @@ public interface MeetupService {
      * @throws EntityNotFoundException  if the given owner user wasn't found.
      */
     MeetupAdminDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException;
+
+    /**
+     * Creates a list of new invitations for the given meetup.
+     *
+     * @param meetupId the meetup id to which the invitations will be sent.
+     * @param userIds  a list with the user's ids that will be invited.
+     * @return the created invitations.
+     * @throws DuplicateEntityException if one of the given invitations already exists.
+     * @throws EntityNotFoundException  if the given meetup or user wasn't found.
+     */
+    List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Calculates the amount of beer cases needed for the given meetup.
@@ -100,17 +111,6 @@ public interface MeetupService {
      * @throws EntityNotFoundException if the meetup wasn't found.
      */
     double getTemperature(long meetupId) throws EntityNotFoundException;
-
-    /**
-     * Creates a list of new invitations for the given meetup.
-     *
-     * @param meetupId the meetup id to which the invitations will be sent.
-     * @param userIds  a list with the user's ids that will be invited.
-     * @return the created invitations.
-     * @throws DuplicateEntityException if one of the given invitations already exists.
-     * @throws EntityNotFoundException  if the given meetup or user wasn't found.
-     */
-    List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Retrieves the meetups created by the given user.

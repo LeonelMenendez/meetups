@@ -7,6 +7,7 @@ import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.UserRepository;
 import com.santander.meetup.security.Role;
+import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MeetupService meetupService;
 
     @Autowired
     private ModelMapper modelMapper;

@@ -42,17 +42,17 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public MeetupModel findWithInscribedUsersById(Long id) throws EntityNotFoundException {
+    public MeetupModel findByIdWithEnrolledUsers(Long id) throws EntityNotFoundException {
         return meetupRepository.findWithInscribedUsersById(id).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, id));
     }
 
     @Override
-    public Iterable<MeetupModel> findAllWithInscribedUsersByOwnerId(Long ownerId) {
+    public List<MeetupModel> findAllByOwnerWithEnrolledUsers(Long ownerId) {
         return meetupRepository.findAllWithInscribedUsersByOwnerId(ownerId);
     }
 
     @Override
-    public Iterable<MeetupModel> findAllByEnrolledUsersUserId(Long userId) {
+    public List<MeetupModel> findAllByUser(Long userId) {
         return meetupRepository.findAllByEnrolledUsersUserId(userId);
     }
 
@@ -62,7 +62,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public boolean existsByOwnerIdAndDay(Long ownerId, LocalDate day) {
+    public boolean existsByOwnerAndDay(Long ownerId, LocalDate day) {
         return meetupRepository.existsByOwnerIdAndDay(ownerId, day);
     }
 
@@ -72,7 +72,7 @@ public class MeetupServiceImpl implements MeetupService {
         long ownerId = meetupCreationDto.getOwnerId();
         LocalDate day = meetup.getDay();
 
-        if (existsByOwnerIdAndDay(ownerId, day)) {
+        if (existsByOwnerAndDay(ownerId, day)) {
             throw new DuplicateEntityException(MeetupModel.class, Arrays.asList(ownerId, day), Arrays.asList("owner", "day"));
         }
 
@@ -82,8 +82,22 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
+    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
+        List<InvitationDto> invitationDtos = new ArrayList<>();
+
+        for (Long userId : userIds) {
+            InvitationCreationDto invitationCreationDto = new InvitationCreationDto();
+            invitationCreationDto.setMeetupId(meetupId);
+            invitationCreationDto.setUserId(userId);
+            invitationDtos.add(invitationService.create(invitationCreationDto));
+        }
+
+        return invitationDtos;
+    }
+
+    @Override
     public int calculateNeededBeerCases(long meetupId) throws EntityNotFoundException {
-        MeetupModel meetup = findWithInscribedUsersById(meetupId);
+        MeetupModel meetup = findByIdWithEnrolledUsers(meetupId);
         return calculateNeededBeerCases(meetup.getTemperature(), meetup.getEnrolledUsers().size());
     }
 
@@ -108,22 +122,8 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
-        List<InvitationDto> invitationDtos = new ArrayList<>();
-
-        for (Long userId : userIds) {
-            InvitationCreationDto invitationCreationDto = new InvitationCreationDto();
-            invitationCreationDto.setMeetupId(meetupId);
-            invitationCreationDto.setUserId(userId);
-            invitationDtos.add(invitationService.create(invitationCreationDto));
-        }
-
-        return invitationDtos;
-    }
-
-    @Override
     public List<MeetupAdminDto> getCreatedMeetups(long ownerId) {
-        Iterable<MeetupModel> meetups = findAllWithInscribedUsersByOwnerId(ownerId);
+        List<MeetupModel> meetups = findAllByOwnerWithEnrolledUsers(ownerId);
         List<MeetupAdminDto> meetupAdminDtos = new ArrayList<>();
         meetups.forEach(meetup -> meetupAdminDtos.add(toAdminDto(meetup)));
         return meetupAdminDtos;
@@ -131,7 +131,7 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public List<MeetupUserDto> getEnrolledMeetups(long userId) {
-        Iterable<MeetupModel> meetups = findAllByEnrolledUsersUserId(userId);
+        List<MeetupModel> meetups = findAllByUser(userId);
         List<MeetupUserDto> meetupUserDtos = new ArrayList<>();
         meetups.forEach(meetup -> meetupUserDtos.add(toUserDto(meetup)));
         return meetupUserDtos;

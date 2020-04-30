@@ -8,7 +8,7 @@ import { Role } from 'src/app/shared/enums/role';
 import { IMeetupRequest, IMeetupResponse } from 'src/app/shared/models/meetup';
 import { IUser } from 'src/app/shared/models/user';
 
-import { MeetupsDataSource } from '../../data-sources/meetups.data-source';
+import { MeetupsDataSource } from '../../../../shared/data-sources/meetups.data-source';
 import { InviteDialogComponent } from '../invite-dialog/invite-dialog.component';
 
 @Component({
@@ -25,9 +25,9 @@ export class AdminHomeComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private userService: UserService,
     private meetupService: MeetupService,
-    private dialog: MatDialog,
-    private userService: UserService
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -36,8 +36,8 @@ export class AdminHomeComponent implements OnInit {
       temperature: ['', Validators.required],
     });
 
-    this.meetupsDataSource = new MeetupsDataSource(this.meetupService);
-    this.meetupsDataSource.loadCreatedMeetups();
+    this.meetupsDataSource = new MeetupsDataSource();
+    this.meetupsDataSource.load(this.userService);
 
     this.userService.findAll(Role.USER).subscribe((users: IUser[]) => {
       this.users = users;
@@ -70,7 +70,7 @@ export class AdminHomeComponent implements OnInit {
     }
 
     this.meetupService.create(this.meetupRequest).subscribe((meetup: IMeetupResponse) => {
-      this.meetupsDataSource.addMeetup(meetup);
+      this.meetupsDataSource.add(meetup);
     });
   }
 

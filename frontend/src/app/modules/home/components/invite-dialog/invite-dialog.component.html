@@ -1,9 +1,9 @@
 <h1 mat-dialog-title>Send invitations</h1>
 <small>{{ meetupDescription }}</small>
 
-<mat-dialog-content [formGroup]="form">
-  <form [formGroup]="form" class="mat-inline-form">
-    <mat-form-field class="input">
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field>
       <mat-label>Guests</mat-label>
       <mat-select formControlName="guests" multiple>
         <mat-option *ngFor="let user of users" [value]="user.id">{{ user.email }}</mat-option>

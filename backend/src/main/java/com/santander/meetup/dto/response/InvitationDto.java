@@ -12,8 +12,8 @@ import java.time.LocalDate;
 public class InvitationDto implements Serializable {
 
     private long id;
-    private long meetupId;
     private long userId;
+    private long meetupId;
     private String meetupOwnerName;
     private String meetupOwnerEmail;
     private LocalDate meetupDay;

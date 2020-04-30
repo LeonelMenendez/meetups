@@ -5,6 +5,7 @@ import com.santander.meetup.dto.response.EnrollmentDto;
 import com.santander.meetup.endpoint.EnrollmentEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
+import com.santander.meetup.exceptions.ValueNotAllowedException;
 import com.santander.meetup.service.EnrollmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,11 +47,12 @@ public class EnrollmentController {
      * Makes the check-in of the user associated to the given enrollment.
      *
      * @param enrollmentId the enrollment id for which will be make the check-in.
-     * @throws EntityNotFoundException if the given enrollment wasn't found.
+     * @throws EntityNotFoundException  if the given enrollment wasn't found.
+     * @throws ValueNotAllowedException if the check-in couldn't be made.
      */
     @ApiOperation(value = "Makes the check-in of the user associated to the given enrollment")
     @PatchMapping(EnrollmentEndpoint.CHECK_IN)
-    public ResponseEntity<Void> checkIn(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException {
+    public ResponseEntity<Void> checkIn(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException, ValueNotAllowedException {
         enrollmentService.checkIn(enrollmentId);
         return ResponseEntity.noContent().build();
     }

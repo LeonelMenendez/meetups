@@ -15,7 +15,7 @@ public interface InvitationRepository extends JpaRepository<InvitationModel, Lon
     Optional<InvitationModel> findById(Long invitationId);
 
     @EntityGraph(attributePaths = {"meetup", "user"})
-    List findAll(Example invitation);
+    List<InvitationModel> findAll(Example invitation);
 
     boolean existsByMeetupIdAndUserIdAndStatusNot(Long meetupId, Long userId, InvitationModel.Status status);
 }

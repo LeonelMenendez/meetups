@@ -1,0 +1,6 @@
+export enum ApiErrorCode {
+  JWT_UNEXPECTED = 110,
+  JWT_EXPIRED = 111,
+  JWT_UNSUPPORTED = 112,
+  JWT_MALFORMED = 113,
+}

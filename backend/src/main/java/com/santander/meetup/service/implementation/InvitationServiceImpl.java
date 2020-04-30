@@ -67,7 +67,7 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public boolean existsByMeetupIdAndUserId(Long meetupId, Long userId) {
+    public boolean existsByMeetupAndUser(Long meetupId, Long userId) {
         return invitationRepository.existsByMeetupIdAndUserIdAndStatusNot(meetupId, userId, InvitationModel.Status.DECLINED);
     }
 
@@ -77,7 +77,7 @@ public class InvitationServiceImpl implements InvitationService {
         long meetupId = invitationCreationDto.getMeetupId();
         long userId = invitationCreationDto.getUserId();
 
-        if (existsByMeetupIdAndUserId(meetupId, userId)) {
+        if (existsByMeetupAndUser(meetupId, userId)) {
             throw new DuplicateEntityException(MeetupModel.class, Arrays.asList(meetupId, userId), Arrays.asList("meetup", "user"));
         }
 

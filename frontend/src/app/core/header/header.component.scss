@@ -1,3 +1,5 @@
+@import '_variables';
+
 .header {
   height: 100vh;
   font-size: 1.5rem;
@@ -8,6 +10,22 @@
   flex: 1 1 auto;
 }
 
-mat-icon {
-  margin: 0 0.4rem;
+.brand-name {
+  color: $accent;
+  font-size: 1.8rem;
+  margin-left: 2rem;
+}
+
+.menu,
+.sidenav {
+  mat-icon {
+    color: $accent;
+    margin: 0 0.4rem;
+  }
+}
+
+.sidenav {
+  mat-icon {
+    margin-right: 1.5rem;
+  }
 }

@@ -4,6 +4,7 @@ import com.santander.meetup.dto.request.EnrollmentCreationDto;
 import com.santander.meetup.dto.response.EnrollmentDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
+import com.santander.meetup.exceptions.ValueNotAllowedException;
 import com.santander.meetup.model.EnrollmentModel;
 import com.santander.meetup.repository.EnrollmentRepository;
 import com.santander.meetup.service.EnrollmentService;
@@ -13,7 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -36,7 +40,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public boolean existsByMeetupIdAndUserId(Long meetupId, Long userId) {
+    public List<EnrollmentDto> findAll(Long userId) {
+        List<EnrollmentModel> enrollments = enrollmentRepository.findAllWithMeetupAndUserByUserId(userId);
+        List<EnrollmentDto> enrollmentDtos = new ArrayList<>();
+        enrollments.forEach(enrollment -> enrollmentDtos.add(toDto(enrollment)));
+        return enrollmentDtos;
+    }
+
+    @Override
+    public boolean existsByMeetupAndUser(Long meetupId, Long userId) {
         return enrollmentRepository.existsByMeetupIdAndUserId(meetupId, userId);
     }
 
@@ -51,7 +63,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         long meetupId = enrollmentCreationDto.getMeetupId();
         long userId = enrollmentCreationDto.getUserId();
 
-        if (existsByMeetupIdAndUserId(meetupId, userId)) {
+        if (existsByMeetupAndUser(meetupId, userId)) {
             throw new DuplicateEntityException(EnrollmentModel.class, Arrays.asList(meetupId, userId), Arrays.asList("meetup", "user"));
         }
 
@@ -62,8 +74,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public void checkIn(long enrollmentId) throws EntityNotFoundException {
+    public void checkIn(long enrollmentId) throws EntityNotFoundException, ValueNotAllowedException {
         EnrollmentModel enrollment = findById(enrollmentId);
+
+        if (!enrollment.getMeetup().getDay().equals(LocalDate.now())) {
+            throw new ValueNotAllowedException("checkIn", true, "the check-in can be only made the day of the meetup");
+        }
+
         enrollment.setCheckedIn(true);
         enrollmentRepository.save(enrollment);
     }
@@ -72,6 +89,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         EnrollmentDto enrollmentDto = modelMapper.map(enrollment, EnrollmentDto.class);
         enrollmentDto.setMeetupId(enrollment.getMeetup().getId());
         enrollmentDto.setUserId(enrollment.getUser().getId());
+        enrollmentDto.setMeetupOwnerName(enrollment.getMeetup().getOwner().getName());
+        enrollmentDto.setMeetupOwnerEmail(enrollment.getMeetup().getOwner().getEmail());
+        enrollmentDto.setMeetupDay(enrollment.getMeetup().getDay());
+        enrollmentDto.setMeetupTemperature(enrollment.getMeetup().getTemperature());
+        enrollmentDto.setCheckedIn(enrollment.isCheckedIn());
         return enrollmentDto;
     }
 }

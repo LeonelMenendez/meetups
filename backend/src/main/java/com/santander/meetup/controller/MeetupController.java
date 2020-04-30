@@ -3,7 +3,6 @@ package com.santander.meetup.controller;
 import com.santander.meetup.dto.request.MeetupCreationDto;
 import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.dto.response.MeetupAdminDto;
-import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.endpoint.MeetupEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -86,29 +84,5 @@ public class MeetupController {
     public ResponseEntity<List<InvitationDto>> create(@Valid @PathVariable long meetupId,
                                                       @Valid @RequestBody List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(meetupService.create(meetupId, userIds), HttpStatus.CREATED);
-    }
-
-    /**
-     * Retrieves the meetups created by the given user.
-     *
-     * @param ownerId the owner id of the meetups to retrieve.
-     * @return a list of the meetups created by the given user.
-     */
-    @ApiOperation(value = "Retrieves the meetups created by the given user")
-    @GetMapping(MeetupEndpoint.CREATED)
-    public ResponseEntity<List<MeetupAdminDto>> getCreatedMeetups(@Valid @RequestParam long ownerId) {
-        return new ResponseEntity<>(meetupService.getCreatedMeetups(ownerId), HttpStatus.OK);
-    }
-
-    /**
-     * Retrieves the meetups in which the given user is enrolled.
-     *
-     * @param userId the user id of the meetups to retrieve.
-     * @return a list of meetups in which the given user is enrolled.
-     */
-    @ApiOperation(value = "Retrieves the meetups in which the given user is enrolled")
-    @GetMapping(MeetupEndpoint.ENROLLED)
-    public ResponseEntity<List<MeetupUserDto>> getEnrolledMeetups(@Valid @RequestParam long userId) {
-        return new ResponseEntity<>(meetupService.getEnrolledMeetups(userId), HttpStatus.OK);
     }
 }

@@ -1,12 +1,12 @@
 <div class="header">
-  <mat-toolbar color="primary">
+  <mat-toolbar>
     <mat-toolbar-row>
-      <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm>
+      <button mat-icon-button (click)="sidenav.toggle()" fxShow fxHide.gt-sm>
         <mat-icon>menu</mat-icon>
       </button>
-      <a class="link" routerLink="/home">Meetups!</a>
+      <a class="link" routerLink="/home" class="brand-name">Meetups!</a>
       <span class="spacer"></span>
-      <div fxShow="true" fxHide.lt-md="true">
+      <div class="menu" fxShow fxHide.lt-md>
         <a mat-button routerLink="/home" routerLinkActive="active" class="icon-text">
           <mat-icon>home</mat-icon>
           <span>Home</span>
@@ -29,7 +29,7 @@
 
   <mat-sidenav-container fxFlexFill>
     <mat-sidenav #sidenav>
-      <mat-nav-list>
+      <mat-nav-list class="sidenav">
         <a mat-list-item routerLink="/home" routerLinkActive="active" class="icon-text">
           <mat-icon>home</mat-icon>
           <span>Home</span>
@@ -38,7 +38,7 @@
         <ng-template [ngxPermissionsOnly]="Role.USER">
           <a mat-list-item routerLink="/invitations" routerLinkActive="active" class="icon-text">
             <mat-icon>email</mat-icon>
-            <span>Invitation</span>
+            <span>Invitations</span>
           </a>
         </ng-template>
 

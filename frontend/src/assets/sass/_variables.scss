@@ -1,2 +1,12 @@
+@import '~@angular/material/theming';
+
 $title-font: 'Open Sans', sans-serif;
 $body-font: 'Montserrat', sans-serif;
+
+$primaryPalette: mat-palette($mat-indigo);
+$accentPalette: mat-palette($mat-pink);
+$warnPalette: mat-palette($mat-deep-orange);
+
+$primary: mat-color($primaryPalette);
+$accent: mat-color($accentPalette);
+$warn: mat-color($warnPalette);

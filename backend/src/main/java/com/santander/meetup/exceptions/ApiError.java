@@ -15,9 +15,14 @@ import java.util.List;
 public class ApiError implements Serializable {
 
     /**
+     * An internal code of the error.
+     */
+    private int code;
+
+    /**
      * The operation call status.
      */
-    private HttpStatus status;
+    private int status;
 
     /**
      * The {@code LocalDateTime} instance of when the error happened. It is established
@@ -35,17 +40,19 @@ public class ApiError implements Serializable {
      */
     private List<String> errors;
 
-    public ApiError(HttpStatus status, String message, List<String> errors) {
+    public ApiError(int code, HttpStatus status, String message, List<String> errors) {
         super();
-        this.status = status;
+        this.code = code;
+        this.status = status.value();
         this.timestamp = LocalDateTime.now();
         this.message = message;
         this.errors = errors;
     }
 
-    public ApiError(HttpStatus status, String message, String error) {
+    public ApiError(int code, HttpStatus status, String message, String error) {
         super();
-        this.status = status;
+        this.code = code;
+        this.status = status.value();
         this.timestamp = LocalDateTime.now();
         this.message = message;
         errors = Arrays.asList(error);

@@ -3,6 +3,7 @@ package com.santander.meetup.exceptions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -21,11 +22,40 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Class to handle errors appropriately to be sent as responses.
  */
 @ControllerAdvice
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    /**
+     * Retrieves a new API error response entity.
+     *
+     * @param code    the internal code.
+     * @param status  the HTTP status.
+     * @param message the error message.
+     * @param errors  a list of detailed errors.
+     * @return a new API error response entity.
+     */
+    public ResponseEntity<Object> getErrorResponse(int code, HttpStatus status, String message, List<String> errors) {
+        ApiError apiError = new ApiError(code, status, message, errors);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+    }
+
+    /**
+     * Retrieves a new API error response entity.
+     *
+     * @param code    the internal code.
+     * @param status  the HTTP status.
+     * @param message the error message.
+     * @param error   the detailed errors.
+     * @return a new API error response entity.
+     */
+    public ResponseEntity<Object> getErrorResponse(int code, HttpStatus status, String message, String error) {
+        ApiError apiError = new ApiError(code, status, message, error.trim());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), status);
+    }
 
     /**
      * Triggered when an unsupported HTTP method for a given end point was received.
@@ -38,14 +68,16 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.REQUEST_METHOD_NOT_SUPPORTED;
+        HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
         String message = "Unsupported HTTP method";
         StringBuilder error = new StringBuilder();
+
         error.append(ex.getMethod());
         error.append(" method is not supported for this request. Supported methods are ");
         ex.getSupportedHttpMethods().forEach(method -> error.append(method + " "));
 
-        ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, message, error.toString().trim());
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message, error.toString());
     }
 
     /**
@@ -59,14 +91,16 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.MEDIA_TYPE_NOT_SUPPORTED;
+        HttpStatus httpStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
         String message = "Unsupported media type";
         StringBuilder error = new StringBuilder();
+
         error.append(ex.getContentType());
         error.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(mediaType -> error.append(mediaType + ", "));
 
-        ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message, error.substring(0, error.length() - 2));
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message, error.toString());
     }
 
     /**
@@ -80,6 +114,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.METHOD_ARGUMENT_NOT_VALID;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         StringBuilder message = new StringBuilder("Invalid arguments: ");
         List<String> errors = new ArrayList<>();
 
@@ -93,8 +129,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             message.append(error.getObjectName() + " ");
         }
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message.toString().trim(), errors);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message.toString(), errors);
     }
 
     /**
@@ -107,11 +142,26 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.MISSING_SERVLET_REQUEST_PARAMETER;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         String message = "Parameter missing";
         String error = ex.getParameterName() + " parameter is missing";
+        return getErrorResponse(code, httpStatus, message, error);
+    }
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message, error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    /**
+     * Triggered when a fatal problem occurred with content mapping.
+     *
+     * @param ex the exception to handle.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.MESSAGE_NOT_READABLE;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        String message = "Invalid body";
+        String error = ex.getCause().getMessage().split("\\s()\\s")[0];
+        return getErrorResponse(code, httpStatus, message, error);
     }
 
     /**
@@ -122,6 +172,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+        int code = ApiErrorCode.CONSTRAINT_VIOLATION;
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
         StringBuilder message = new StringBuilder("Invalid arguments: ");
         List<String> errors = new ArrayList<>();
 
@@ -130,8 +182,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             message.append(violation.getPropertyPath() + " ");
         }
 
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message.toString().trim(), errors);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message.toString(), errors);
     }
 
     /**
@@ -142,11 +193,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        int code = ApiErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         String message = "Invalid " + ex.getName() + "argument type";
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message, error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message, error);
     }
 
     /**
@@ -157,11 +208,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({BadCredentialsException.class})
     public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        int code = ApiErrorCode.BAD_CREDENTIALS;
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
         String message = "Bad credentials";
         String error = ex.getMessage();
-
-        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, message, error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message, error);
     }
 
     /**
@@ -172,11 +223,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
+        int code = ApiErrorCode.ENTITY_NOT_FOUND;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         String message = ex.getEntityName() + " was not found";
         String error = ex.getEntityName() + " was not found for parameter " + ex.getId();
-
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message, error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message, error);
     }
 
     /**
@@ -187,17 +238,19 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({DuplicateEntityException.class})
     public ResponseEntity<Object> handleDuplicateResource(DuplicateEntityException ex) {
+        int code = ApiErrorCode.DUPLICATE_ENTITY;
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
         String message = ex.getEntityName() + " already exists";
-        StringBuilder errorBuilder = new StringBuilder();
-        errorBuilder.append("{" + ex.getValues().get(0).toString());
-        ex.getValues().stream().skip(1).forEach(value -> errorBuilder.append(", " + value));
-        errorBuilder.append("} already exists. Select another {");
-        errorBuilder.append(ex.getUniqueFields().get(0).toString());
-        ex.getUniqueFields().stream().skip(1).forEach(field -> errorBuilder.append(", " + field));
-        errorBuilder.append("}");
+        StringBuilder error = new StringBuilder();
 
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message, errorBuilder.toString());
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        error.append("{" + ex.getValues().get(0).toString());
+        ex.getValues().stream().skip(1).forEach(value -> error.append(", " + value));
+        error.append("} already exists. Select another {");
+        error.append(ex.getUniqueFields().get(0).toString());
+        ex.getUniqueFields().stream().skip(1).forEach(field -> error.append(", " + field));
+        error.append("}");
+
+        return getErrorResponse(code, httpStatus, message, error.toString());
     }
 
     /**
@@ -208,11 +261,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({ValueNotAllowedException.class})
     public ResponseEntity<Object> handleDuplicateResource(ValueNotAllowedException ex) {
+        int code = ApiErrorCode.VALUE_NOT_ALLOWED;
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
         String message = "Value not allowed";
         String error = "The " + ex.getAttribute() + " {" + ex.getValue() + "} is not allowed because " + ex.getReason();
-
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT, message, error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        return getErrorResponse(code, httpStatus, message, error);
     }
 
     /**
@@ -223,8 +276,10 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(Exception ex) {
+        int code = ApiErrorCode.INTERNAL;
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         String message = "It's not you. It's us. We are having some problems";
-        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, message, "error occurred");
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        String error = "error occurred";
+        return getErrorResponse(code, httpStatus, message, error);
     }
 }

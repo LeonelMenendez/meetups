@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,10 +18,10 @@ public interface MeetupRepository extends JpaRepository<MeetupModel, Long> {
     Optional<MeetupModel> findWithInscribedUsersById(Long id);
 
     @EntityGraph(attributePaths = {"enrolledUsers"})
-    Iterable<MeetupModel> findAllWithInscribedUsersByOwnerId(Long ownerId);
+    List<MeetupModel> findAllWithInscribedUsersByOwnerId(Long ownerId);
 
     @EntityGraph(attributePaths = {"enrolledUsers"})
-    Iterable<MeetupModel> findAllByEnrolledUsersUserId(Long userId);
+    List<MeetupModel> findAllByEnrolledUsersUserId(Long userId);
 
     boolean existsById(Long id);
 

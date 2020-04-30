@@ -1,9 +1,10 @@
-export interface IMeetupResponse {
-  id: number;
+import { Model } from '../model';
+
+export interface IMeetupResponse extends Model {
   day: Date;
   ownerId: number;
   ownerName: string;
   ownerEmail: string;
-  tempareture: number;
+  temparature: number;
   beerCasesNeeded?: number;
 }

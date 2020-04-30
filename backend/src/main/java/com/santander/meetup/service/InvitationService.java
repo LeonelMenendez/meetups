@@ -41,7 +41,7 @@ public interface InvitationService {
      * @param userId   the user id to be found.
      * @return {@code true} if the invitation exists. {@code false} otherwise.
      */
-    boolean existsByMeetupIdAndUserId(Long meetupId, Long userId);
+    boolean existsByMeetupAndUser(Long meetupId, Long userId);
 
     /**
      * Creates a new invitation.

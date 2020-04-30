@@ -15,11 +15,9 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((err) => {
         if (err.status === HttpStatusCode.UNAUTHORIZED) {
           this.authService.signOut();
-          location.reload(true);
         }
 
-        const error = err.error.message || err.statusText;
-        return throwError(error);
+        return throwError(err);
       })
     );
   }

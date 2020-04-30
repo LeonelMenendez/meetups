@@ -4,12 +4,15 @@ import com.santander.meetup.dto.request.EnrollmentCreationDto;
 import com.santander.meetup.dto.response.EnrollmentDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
+import com.santander.meetup.exceptions.ValueNotAllowedException;
 import com.santander.meetup.model.EnrollmentModel;
+
+import java.util.List;
 
 public interface EnrollmentService {
 
     /**
-     * Finds a enrollment by id.
+     * Finds an enrollment by id.
      *
      * @param id the id to be found.
      * @return an enrollment with the given id.
@@ -18,13 +21,21 @@ public interface EnrollmentService {
     EnrollmentModel findById(Long id) throws EntityNotFoundException;
 
     /**
-     * Determines if a enrollment already exists by the given meetup and user.
+     * Finds all the enrollments of the given user.
+     *
+     * @param userId the user id to be found.
+     * @return a list of enrollments of the given user.
+     */
+    List<EnrollmentDto> findAll(Long userId);
+
+    /**
+     * Determines if an enrollment already exists by the given meetup and user.
      *
      * @param meetupId the meetup id to be found
      * @param userId   the user id to be found
      * @return {@code true} if the enrollment exists. {@code false} otherwise.
      */
-    boolean existsByMeetupIdAndUserId(Long meetupId, Long userId);
+    boolean existsByMeetupAndUser(Long meetupId, Long userId);
 
     /**
      * Counts the number of users enrolled to the given meetup.
@@ -48,7 +59,8 @@ public interface EnrollmentService {
      * Makes the check-in of the user associated to the given enrollment.
      *
      * @param enrollmentId the enrollment id for which will be made the check-in.
-     * @throws EntityNotFoundException if the enrollment wasn't found.
+     * @throws EntityNotFoundException  if the enrollment wasn't found.
+     * @throws ValueNotAllowedException if the check-in couldn't be made.
      */
-    void checkIn(long enrollmentId) throws EntityNotFoundException;
+    void checkIn(long enrollmentId) throws EntityNotFoundException, ValueNotAllowedException;
 }

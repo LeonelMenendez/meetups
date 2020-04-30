@@ -9,8 +9,8 @@ import { AuthService } from './auth.service';
 export class RequestService {
   constructor(private authService: AuthService) {}
 
-  get userId(): string {
-    return this.authService.currentUserValue.id.toString();
+  get userId(): number {
+    return this.authService.currentUserValue.id;
   }
 
   getHttpParams(params: object): HttpParams {

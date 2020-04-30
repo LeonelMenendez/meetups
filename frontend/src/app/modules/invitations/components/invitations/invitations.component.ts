@@ -3,7 +3,7 @@ import { InvitationService } from 'src/app/core/services/invitation.service';
 import { InvitationStatus } from 'src/app/shared/enums/invitation-status';
 import { IInvitationResponse } from 'src/app/shared/models/invitation';
 
-import { InvitationsDataSource } from '../../data-sources/invitations.data-source';
+import { InvitationsDataSource } from '../../../../shared/data-sources/invitations.data-source';
 
 @Component({
   selector: 'app-invitations',
@@ -19,8 +19,8 @@ export class InvitationsComponent implements OnInit {
   constructor(private invitationService: InvitationService) {}
 
   ngOnInit(): void {
-    this.invitationsDataSource = new InvitationsDataSource(this.invitationService);
-    this.invitationsDataSource.loadInvitations();
+    this.invitationsDataSource = new InvitationsDataSource();
+    this.invitationsDataSource.load(this.invitationService);
   }
 
   acceptInvitation(element: IInvitationResponse) {
@@ -34,7 +34,7 @@ export class InvitationsComponent implements OnInit {
   changeInvitationStatus(element: IInvitationResponse, status: InvitationStatus) {
     this.invitationService.changeStatus(element.id, status).subscribe(() => {
       element.status = status;
-      this.invitationsDataSource.updateInvitation(element);
+      this.invitationsDataSource.update(element);
     });
   }
 }
