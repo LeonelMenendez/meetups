@@ -24,7 +24,7 @@ export class UserHomeComponent implements OnInit {
   }
 
   canCheckIn(element: IEnrollmentResponse): boolean {
-    return !element.checkedIn && moment(element.meetupDay).isSame(this.today, 'day');
+    return !element.checkedIn && moment(element.meetupDay).isSameOrBefore(this.today, 'day');
   }
 
   checkIn(element: IEnrollmentResponse) {

@@ -10,6 +10,7 @@ import com.santander.meetup.repository.EnrollmentRepository;
 import com.santander.meetup.service.EnrollmentService;
 import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
+import jdk.vm.ci.meta.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,8 +78,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void checkIn(long enrollmentId) throws EntityNotFoundException, ValueNotAllowedException {
         EnrollmentModel enrollment = findById(enrollmentId);
 
-        if (!enrollment.getMeetup().getDay().equals(LocalDate.now())) {
-            throw new ValueNotAllowedException("checkIn", true, "the check-in can be only made the day of the meetup");
+        if (enrollment.getMeetup().getDay().isAfter(LocalDate.now())) {
+            throw new ValueNotAllowedException("checked in", true, "the check-in can't be made before the meetup");
         }
 
         enrollment.setCheckedIn(true);
