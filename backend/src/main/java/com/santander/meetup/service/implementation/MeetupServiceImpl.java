@@ -14,6 +14,7 @@ import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ public class MeetupServiceImpl implements MeetupService {
     private final InvitationService invitationService;
     private final ModelMapper modelMapper;
 
-    public MeetupServiceImpl(MeetupRepository meetupRepository, UserService userService, InvitationService invitationService, ModelMapper modelMapper) {
+    public MeetupServiceImpl(MeetupRepository meetupRepository, UserService userService, @Lazy InvitationService invitationService, ModelMapper modelMapper) {
         this.meetupRepository = meetupRepository;
         this.userService = userService;
         this.invitationService = invitationService;

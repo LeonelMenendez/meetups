@@ -48,7 +48,7 @@ public class WeatherServiceImpl implements WeatherService {
                         .queryParam("city", CITY)
                         .queryParam("days", 16)
                         .queryParam("units", METRIC_UNITS)
-                        .queryParam("key", "apiKey")
+                        .queryParam("key", apiKey)
                         .build())
                 .retrieve()
                 .bodyToMono(DailyForecastDto.class)
