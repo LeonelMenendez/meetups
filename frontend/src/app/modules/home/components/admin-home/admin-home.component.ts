@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import * as moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { MeetupService } from 'src/app/core/services/meetup.service';
 import { UserService } from 'src/app/core/services/user.service';
+import { WeatherService } from 'src/app/core/services/weather.service';
 import { Role } from 'src/app/shared/enums/role';
 import { IMeetupRequest, IMeetupResponse } from 'src/app/shared/models/meetup';
 import { IUser } from 'src/app/shared/models/user';
+import { IDayWeatherForecastResponse } from 'src/app/shared/models/weather';
 
 import { MeetupsDataSource } from '../../../../shared/data-sources/meetups.data-source';
 import { InviteDialogComponent } from '../invite-dialog/invite-dialog.component';
@@ -18,6 +22,10 @@ import { InviteDialogComponent } from '../invite-dialog/invite-dialog.component'
 })
 export class AdminHomeComponent implements OnInit {
   form: FormGroup;
+  minDate: Date;
+  maxDate: Date;
+  dayWeatherForecastList: IDayWeatherForecastResponse[];
+
   users: IUser[];
   displayedColumns = ['day', 'temperature', 'beerCasesNeeded', 'actions'];
   meetupsDataSource: MeetupsDataSource;
@@ -27,7 +35,9 @@ export class AdminHomeComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private meetupService: MeetupService,
-    private dialog: MatDialog
+    private weatherService: WeatherService,
+    private dialog: MatDialog,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +52,33 @@ export class AdminHomeComponent implements OnInit {
     this.userService.findAll(Role.USER).subscribe((users: IUser[]) => {
       this.users = users;
     });
+  }
+
+  isDayWeatherForecastListLoaded() {
+    return Array.isArray(this.dayWeatherForecastList) && this.dayWeatherForecastList.length;
+  }
+
+  loadDayWeatherForecastList() {
+    if (!this.isDayWeatherForecastListLoaded()) {
+      this.weatherService.getDailyWeatherForecast().subscribe((dayWeatherForecastList) => {
+        this.dayWeatherForecastList = dayWeatherForecastList;
+        this.minDate = moment(dayWeatherForecastList[0].day).toDate();
+        this.maxDate = moment(
+          dayWeatherForecastList[dayWeatherForecastList.length - 1].day
+        ).toDate();
+      });
+    }
+  }
+
+  loadTemperature(selectedDay: Date) {
+    if (this.isDayWeatherForecastListLoaded()) {
+      const dayToCompare = moment(selectedDay);
+      const dayWeatherForecast = this.dayWeatherForecastList.find((dayWeatherForecast) =>
+        moment(dayWeatherForecast.day).isSame(moment(dayToCompare), 'day')
+      );
+
+      this.temperature.patchValue(dayWeatherForecast.temperature);
+    }
   }
 
   get day(): AbstractControl {
@@ -70,6 +107,7 @@ export class AdminHomeComponent implements OnInit {
     }
 
     this.meetupService.create(this.meetupRequest).subscribe((meetup: IMeetupResponse) => {
+      this.toastr.success('Meetup created successfully');
       this.meetupsDataSource.add(meetup);
     });
   }

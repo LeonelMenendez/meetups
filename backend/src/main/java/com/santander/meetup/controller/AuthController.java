@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @Api(tags = "Authentication")
 @RestController
-@RequestMapping(value = AuthEndpoint.ROOT)
+@RequestMapping(value = AuthEndpoint.BASE)
 public class AuthController {
 
     @Autowired

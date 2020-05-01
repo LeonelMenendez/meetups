@@ -22,7 +22,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;

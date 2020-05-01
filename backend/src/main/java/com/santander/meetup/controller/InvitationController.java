@@ -28,7 +28,7 @@ import java.util.List;
 
 @Api(tags = "Invitations")
 @RestController
-@RequestMapping(value = InvitationEndpoint.ROOT)
+@RequestMapping(value = InvitationEndpoint.BASE)
 public class InvitationController {
 
     @Autowired

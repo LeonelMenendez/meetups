@@ -24,7 +24,7 @@ import java.util.List;
 
 @Api(tags = "Meetups")
 @RestController
-@RequestMapping(value = MeetupEndpoint.ROOT)
+@RequestMapping(value = MeetupEndpoint.BASE)
 public class MeetupController {
 
     @Autowired

@@ -10,7 +10,6 @@ import com.santander.meetup.repository.EnrollmentRepository;
 import com.santander.meetup.service.EnrollmentService;
 import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
-import jdk.vm.ci.meta.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

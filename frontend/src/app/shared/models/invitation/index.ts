@@ -1,3 +1,3 @@
-export * from '../invitation/invitation.request';
-export * from '../invitation/invitations.request';
-export * from '../invitation/invitation.response';
+export * from './invitation.request';
+export * from './invitations.request';
+export * from './invitation.response';

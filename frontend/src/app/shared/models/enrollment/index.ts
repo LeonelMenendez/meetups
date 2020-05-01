@@ -1,1 +1,1 @@
-export * from '../enrollment/enrollment.response';
+export * from './enrollment.response';

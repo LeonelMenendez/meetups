@@ -1,2 +1,2 @@
-export * from '../meetup/meetup.request';
-export * from '../meetup/meetup.response';
+export * from './meetup.request';
+export * from './meetup.response';

@@ -23,7 +23,7 @@ import javax.validation.Valid;
 
 @Api(tags = "Enrollments")
 @RestController
-@RequestMapping(value = EnrollmentEndpoint.ROOT)
+@RequestMapping(value = EnrollmentEndpoint.BASE)
 public class EnrollmentController {
 
     @Autowired

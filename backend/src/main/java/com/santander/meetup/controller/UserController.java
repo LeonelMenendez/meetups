@@ -25,7 +25,7 @@ import java.util.List;
 
 @Api(tags = "Users")
 @RestController
-@RequestMapping(value = UserEndpoint.ROOT)
+@RequestMapping(value = UserEndpoint.BASE)
 public class UserController {
 
     @Autowired

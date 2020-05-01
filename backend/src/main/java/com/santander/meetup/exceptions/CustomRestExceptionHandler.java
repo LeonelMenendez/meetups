@@ -13,8 +13,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolation;
@@ -58,26 +60,19 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Triggered when an unsupported HTTP method for a given end point was received.
+     * Triggered when the requested resource couldn't be found.
      *
-     * @param ex      the exception to handle.
-     * @param headers {@code HttpHeaders}.
-     * @param status  {@code HttpStatus}.
-     * @param request {@code WebRequest}.
+     * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        int code = ApiErrorCode.REQUEST_METHOD_NOT_SUPPORTED;
-        HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
-        String message = "Unsupported HTTP method";
-        StringBuilder error = new StringBuilder();
-
-        error.append(ex.getMethod());
-        error.append(" method is not supported for this request. Supported methods are ");
-        ex.getSupportedHttpMethods().forEach(method -> error.append(method + " "));
-
-        return getErrorResponse(code, httpStatus, message, error.toString());
+    public ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.NOT_FOUND;
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        String message = "404 error";
+        String error = "Requested resource couldn't be found";
+        return getErrorResponse(code, httpStatus, message, error);
     }
 
     /**
@@ -90,8 +85,9 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} object with the error handled.
      */
     @Override
+    @ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        int code = ApiErrorCode.MEDIA_TYPE_NOT_SUPPORTED;
+        int code = ApiErrorCode.UNSUPPORTED_MEDIA_TYPE;
         HttpStatus httpStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
         String message = "Unsupported media type";
         StringBuilder error = new StringBuilder();
@@ -99,6 +95,30 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         error.append(ex.getContentType());
         error.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(mediaType -> error.append(mediaType + ", "));
+
+        return getErrorResponse(code, httpStatus, message, error.toString());
+    }
+
+    /**
+     * Triggered when an unsupported HTTP method for a given end point was received.
+     *
+     * @param ex      the exception to handle.
+     * @param headers {@code HttpHeaders}.
+     * @param status  {@code HttpStatus}.
+     * @param request {@code WebRequest}.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED)
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.METHOD_NOT_ALLOWED;
+        HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+        String message = "Unsupported HTTP method";
+        StringBuilder error = new StringBuilder();
+
+        error.append(ex.getMethod());
+        error.append(" method is not supported for this request. Supported methods are ");
+        ex.getSupportedHttpMethods().forEach(method -> error.append(method + " "));
 
         return getErrorResponse(code, httpStatus, message, error.toString());
     }
@@ -112,6 +132,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request {@code WebRequest}.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         int code = ApiErrorCode.METHOD_ARGUMENT_NOT_VALID;
@@ -133,19 +154,18 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Triggered when a {@code required} request parameter was missing.
+     * Triggered when a method argument was not the expected type.
      *
-     * @param headers {@code HttpHeaders}.
-     * @param status  {@code HttpStatus}.
-     * @param request {@code WebRequest}.
+     * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
-    @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        int code = ApiErrorCode.MISSING_SERVLET_REQUEST_PARAMETER;
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        int code = ApiErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        String message = "Parameter missing";
-        String error = ex.getParameterName() + " parameter is missing";
+        String message = "Invalid " + ex.getName() + "argument type";
+        String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
         return getErrorResponse(code, httpStatus, message, error);
     }
 
@@ -155,6 +175,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         int code = ApiErrorCode.MESSAGE_NOT_READABLE;
@@ -165,11 +186,30 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Triggered when a {@code required} request parameter was missing.
+     *
+     * @param headers {@code HttpHeaders}.
+     * @param status  {@code HttpStatus}.
+     * @param request {@code WebRequest}.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        int code = ApiErrorCode.MISSING_SERVLET_REQUEST_PARAMETER;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        String message = "Parameter missing";
+        String error = ex.getParameterName() + " parameter is missing";
+        return getErrorResponse(code, httpStatus, message, error);
+    }
+
+    /**
      * Triggered when a requested DML operation resulted in a violation of a defined integrity constraint.
      *
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
         int code = ApiErrorCode.CONSTRAINT_VIOLATION;
@@ -186,41 +226,12 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Triggered when a method argument was not the expected type.
-     *
-     * @param ex the exception to handle.
-     * @return a {@code ResponseEntity} object with the error handled.
-     */
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        int code = ApiErrorCode.METHOD_ARGUMENT_TYPE_MISMATCH;
-        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        String message = "Invalid " + ex.getName() + "argument type";
-        String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
-        return getErrorResponse(code, httpStatus, message, error);
-    }
-
-    /**
-     * Triggered when a given authentication request was rejected because the credentials are invalid.
-     *
-     * @param ex the exception to handle.
-     * @return a {@code ResponseEntity} object with the error handled.
-     */
-    @ExceptionHandler({BadCredentialsException.class})
-    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
-        int code = ApiErrorCode.BAD_CREDENTIALS;
-        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-        String message = "Bad credentials";
-        String error = ex.getMessage();
-        return getErrorResponse(code, httpStatus, message, error);
-    }
-
-    /**
      * Triggered when a given entity was not found.
      *
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
         int code = ApiErrorCode.ENTITY_NOT_FOUND;
@@ -236,6 +247,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler({DuplicateEntityException.class})
     public ResponseEntity<Object> handleDuplicateResource(DuplicateEntityException ex) {
         int code = ApiErrorCode.DUPLICATE_ENTITY;
@@ -259,6 +271,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler({ValueNotAllowedException.class})
     public ResponseEntity<Object> handleDuplicateResource(ValueNotAllowedException ex) {
         int code = ApiErrorCode.VALUE_NOT_ALLOWED;
@@ -269,11 +282,28 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Triggered when a given authentication request was rejected because the credentials are invalid.
+     *
+     * @param ex the exception to handle.
+     * @return a {@code ResponseEntity} object with the error handled.
+     */
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        int code = ApiErrorCode.BAD_CREDENTIALS;
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+        String message = "Bad credentials";
+        String error = ex.getMessage();
+        return getErrorResponse(code, httpStatus, message, error);
+    }
+
+    /**
      * Default Handler. It deals with all other exceptions that don't have specific handlers.
      *
      * @param ex the exception to handle.
      * @return a {@code ResponseEntity} object with the error handled.
      */
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(Exception ex) {
         int code = ApiErrorCode.INTERNAL;

@@ -1,6 +1,6 @@
 <h3 class="title">Meetups</h3>
 
-<mat-expansion-panel>
+<mat-expansion-panel (opened)="loadDayWeatherForecastList()">
   <mat-expansion-panel-header>
     <mat-panel-title>
       Create new meetup
@@ -10,7 +10,14 @@
   <form [formGroup]="form" (ngSubmit)="submit()" class="mat-inline-form">
     <mat-form-field class="input">
       <mat-label>Choose a day</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="day" />
+      <input
+        matInput
+        formControlName="day"
+        [matDatepicker]="picker"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="loadTemperature($event.value)"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
       <mat-error>
