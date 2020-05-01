@@ -19,17 +19,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    public AuthServiceImpl(AuthenticationManager authenticationManager, UserService userService, ModelMapper modelMapper, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public UserDto signUp(SignUpDto signUpDTO) throws DuplicateEntityException {

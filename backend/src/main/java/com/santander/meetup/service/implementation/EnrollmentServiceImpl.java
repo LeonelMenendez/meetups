@@ -22,17 +22,17 @@ import java.util.List;
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
 
-    @Autowired
-    private EnrollmentRepository enrollmentRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final MeetupService meetupService;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private MeetupService meetupService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, MeetupService meetupService, UserService userService, ModelMapper modelMapper) {
+        this.enrollmentRepository = enrollmentRepository;
+        this.meetupService = meetupService;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public EnrollmentModel findById(Long id) throws EntityNotFoundException {

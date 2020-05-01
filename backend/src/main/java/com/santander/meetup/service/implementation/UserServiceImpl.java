@@ -21,17 +21,15 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MeetupService meetupService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, MeetupService meetupService, ModelMapper modelMapper) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public UserModel findById(Long id) throws EntityNotFoundException {

@@ -27,20 +27,19 @@ import java.util.List;
 @Service
 public class InvitationServiceImpl implements InvitationService {
 
-    @Autowired
-    private InvitationRepository invitationRepository;
+    private final InvitationRepository invitationRepository;
+    private final MeetupService meetupService;
+    private final UserService userService;
+    private final EnrollmentService enrollmentService;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private MeetupService meetupService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private EnrollmentService enrollmentService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public InvitationServiceImpl(InvitationRepository invitationRepository, MeetupService meetupService, UserService userService, EnrollmentService enrollmentService, ModelMapper modelMapper) {
+        this.invitationRepository = invitationRepository;
+        this.meetupService = meetupService;
+        this.userService = userService;
+        this.enrollmentService = enrollmentService;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public InvitationModel findById(Long id) throws EntityNotFoundException {

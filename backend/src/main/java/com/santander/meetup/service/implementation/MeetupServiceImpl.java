@@ -24,17 +24,17 @@ import java.util.List;
 @Service
 public class MeetupServiceImpl implements MeetupService {
 
-    @Autowired
-    private MeetupRepository meetupRepository;
+    private final MeetupRepository meetupRepository;
+    private final UserService userService;
+    private final InvitationService invitationService;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private InvitationService invitationService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public MeetupServiceImpl(MeetupRepository meetupRepository, UserService userService, InvitationService invitationService, ModelMapper modelMapper) {
+        this.meetupRepository = meetupRepository;
+        this.userService = userService;
+        this.invitationService = invitationService;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public MeetupModel findById(Long id) throws EntityNotFoundException {
