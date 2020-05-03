@@ -5,20 +5,10 @@ import com.santander.meetup.dto.response.EnrollmentDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.exceptions.ValueNotAllowedException;
-import com.santander.meetup.model.EnrollmentModel;
 
 import java.util.List;
 
 public interface EnrollmentService {
-
-    /**
-     * Finds an enrollment by id.
-     *
-     * @param id the id to be found.
-     * @return an enrollment with the given id.
-     * @throws EntityNotFoundException if the meetup wasn't found.
-     */
-    EnrollmentModel findById(Long id) throws EntityNotFoundException;
 
     /**
      * Finds all the enrollments of the given user.

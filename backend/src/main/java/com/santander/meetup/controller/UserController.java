@@ -11,7 +11,6 @@ import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,14 +27,15 @@ import java.util.List;
 @RequestMapping(value = UserEndpoint.BASE)
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final MeetupService meetupService;
+    private final EnrollmentService enrollmentService;
 
-    @Autowired
-    MeetupService meetupService;
-
-    @Autowired
-    EnrollmentService enrollmentService;
+    public UserController(UserService userService, MeetupService meetupService, EnrollmentService enrollmentService) {
+        this.userService = userService;
+        this.meetupService = meetupService;
+        this.enrollmentService = enrollmentService;
+    }
 
     /**
      * Finds all the users filtered by the given parameters.

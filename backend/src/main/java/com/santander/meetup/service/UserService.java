@@ -3,31 +3,11 @@ package com.santander.meetup.service;
 import com.santander.meetup.dto.request.SignUpDto;
 import com.santander.meetup.dto.response.UserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
-import com.santander.meetup.exceptions.EntityNotFoundException;
-import com.santander.meetup.model.UserModel;
 import com.santander.meetup.security.Role;
 
 import java.util.List;
 
 public interface UserService {
-
-    /**
-     * Finds a user by id.
-     *
-     * @param id the id to be found.
-     * @return a user with the given id.
-     * @throws EntityNotFoundException if the user wasn't found.
-     */
-    UserModel findById(Long id) throws EntityNotFoundException;
-
-    /**
-     * Finds a user by email.
-     *
-     * @param email the email to be found.
-     * @return a user with the given email.
-     * @throws EntityNotFoundException if the user wasn't found.
-     */
-    UserModel findByEmail(String email) throws EntityNotFoundException;
 
     /**
      * Finds all the users filtered by the given parameters.

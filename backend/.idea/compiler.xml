@@ -6,16 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="meetups" />
         <module name="meetup" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="meetup" target="1.8" />
+      <module name="meetups" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="meetup" options="-parameters" />
+      <module name="meetups" options="-parameters" />
     </option>
   </component>
 </project>

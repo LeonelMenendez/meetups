@@ -5,7 +5,6 @@ import com.santander.meetup.endpoint.WeatherEndpoint;
 import com.santander.meetup.service.WeatherService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +18,11 @@ import java.util.List;
 @RequestMapping(value = WeatherEndpoint.BASE)
 public class WeatherController {
 
-    @Autowired
-    WeatherService weatherService;
+    private final WeatherService weatherService;
+
+    public WeatherController(WeatherService weatherService) {
+        this.weatherService = weatherService;
+    }
 
     @ApiOperation(value = "Retrieves a 16-day forecast in 1-day intervals")
     @GetMapping(WeatherEndpoint.DAILY_FORECAST)

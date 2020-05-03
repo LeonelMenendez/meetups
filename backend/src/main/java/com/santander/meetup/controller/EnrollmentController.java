@@ -9,7 +9,6 @@ import com.santander.meetup.exceptions.ValueNotAllowedException;
 import com.santander.meetup.service.EnrollmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,8 +25,11 @@ import javax.validation.Valid;
 @RequestMapping(value = EnrollmentEndpoint.BASE)
 public class EnrollmentController {
 
-    @Autowired
-    EnrollmentService enrollmentService;
+    private final EnrollmentService enrollmentService;
+
+    public EnrollmentController(EnrollmentService enrollmentService) {
+        this.enrollmentService = enrollmentService;
+    }
 
     /**
      * Creates a new enrollment.

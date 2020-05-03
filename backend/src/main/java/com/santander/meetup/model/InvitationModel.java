@@ -1,8 +1,7 @@
 package com.santander.meetup.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,13 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "invitation")
-@Getter
-@Setter
-@NoArgsConstructor
+@Table(name = "invitation", uniqueConstraints = @UniqueConstraint(columnNames = {"meetup_id", "user_id"}))
+@Data
+@EqualsAndHashCode(of = {"meetup", "user"})
 public class InvitationModel {
 
     @Id

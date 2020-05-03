@@ -80,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     /************ INVITATION ************/
                     .antMatchers(HttpMethod.GET, InvitationEndpoint.ANT_BASE).hasRole(Role.USER.getName())
                     .antMatchers(HttpMethod.POST, InvitationEndpoint.BASE).hasRole(Role.ADMIN.getName())
-                    .antMatchers(HttpMethod.PATCH, InvitationEndpoint.BASE + InvitationEndpoint.ANT_INVITATION).hasRole(Role.USER.getName())
+                    .antMatchers(HttpMethod.PATCH, InvitationEndpoint.BASE + InvitationEndpoint.ANT_INVITATION_STATUS).hasRole(Role.USER.getName())
 
                     /************ WEATHER ************/
                     .antMatchers(HttpMethod.GET, WeatherEndpoint.BASE + WeatherEndpoint.ANT_DAILY_FORECAST).hasAnyRole(Role.USER.getName(), Role.ADMIN.getName())

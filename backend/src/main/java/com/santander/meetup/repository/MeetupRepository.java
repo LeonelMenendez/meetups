@@ -15,10 +15,10 @@ public interface MeetupRepository extends JpaRepository<MeetupModel, Long> {
     Optional<MeetupModel> findById(Long id);
 
     @EntityGraph(attributePaths = {"enrolledUsers"})
-    Optional<MeetupModel> findWithInscribedUsersById(Long id);
+    Optional<MeetupModel> findWithEnrolledUsersById(Long id);
 
     @EntityGraph(attributePaths = {"enrolledUsers"})
-    List<MeetupModel> findAllWithInscribedUsersByOwnerId(Long ownerId);
+    List<MeetupModel> findAllWithEnrolledUsersByOwnerId(Long ownerId);
 
     @EntityGraph(attributePaths = {"enrolledUsers"})
     List<MeetupModel> findAllByEnrolledUsersUserId(Long userId);

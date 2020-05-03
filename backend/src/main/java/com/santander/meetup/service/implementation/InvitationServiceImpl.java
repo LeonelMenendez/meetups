@@ -2,7 +2,7 @@ package com.santander.meetup.service.implementation;
 
 import com.santander.meetup.dto.request.EnrollmentCreationDto;
 import com.santander.meetup.dto.request.InvitationCreationDto;
-import com.santander.meetup.dto.request.InvitationPatchDto;
+import com.santander.meetup.dto.request.InvitationStatusDto;
 import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
@@ -11,12 +11,11 @@ import com.santander.meetup.model.InvitationModel;
 import com.santander.meetup.model.MeetupModel;
 import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.InvitationRepository;
+import com.santander.meetup.repository.MeetupRepository;
+import com.santander.meetup.repository.UserRepository;
 import com.santander.meetup.service.EnrollmentService;
 import com.santander.meetup.service.InvitationService;
-import com.santander.meetup.service.MeetupService;
-import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -28,22 +27,22 @@ import java.util.List;
 public class InvitationServiceImpl implements InvitationService {
 
     private final InvitationRepository invitationRepository;
-    private final MeetupService meetupService;
-    private final UserService userService;
+    private final MeetupRepository meetupRepository;
+    private final UserRepository userRepository;
     private final EnrollmentService enrollmentService;
     private final ModelMapper modelMapper;
 
-    public InvitationServiceImpl(InvitationRepository invitationRepository, MeetupService meetupService, UserService userService, EnrollmentService enrollmentService, ModelMapper modelMapper) {
+    public InvitationServiceImpl(InvitationRepository invitationRepository, MeetupRepository meetupRepository, UserRepository userRepository, EnrollmentService enrollmentService, ModelMapper modelMapper) {
         this.invitationRepository = invitationRepository;
-        this.meetupService = meetupService;
-        this.userService = userService;
+        this.meetupRepository = meetupRepository;
+        this.userRepository = userRepository;
         this.enrollmentService = enrollmentService;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    public InvitationModel findById(Long id) throws EntityNotFoundException {
-        return invitationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(InvitationModel.class, id));
+    public boolean existsByMeetupAndUser(Long meetupId, Long userId) {
+        return invitationRepository.existsByMeetupIdAndUserId(meetupId, userId);
     }
 
     @Override
@@ -66,12 +65,7 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public boolean existsByMeetupAndUser(Long meetupId, Long userId) {
-        return invitationRepository.existsByMeetupIdAndUserIdAndStatusNot(meetupId, userId, InvitationModel.Status.DECLINED);
-    }
-
-    @Override
-    public InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException {
+    public InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
         InvitationModel invitation = modelMapper.map(invitationCreationDto, InvitationModel.class);
         long meetupId = invitationCreationDto.getMeetupId();
         long userId = invitationCreationDto.getUserId();
@@ -80,33 +74,48 @@ public class InvitationServiceImpl implements InvitationService {
             throw new DuplicateEntityException(MeetupModel.class, Arrays.asList(meetupId, userId), Arrays.asList("meetup", "user"));
         }
 
-        invitation.setMeetup(meetupService.findById(invitationCreationDto.getMeetupId()));
-        invitation.setUser(userService.findById(invitationCreationDto.getUserId()));
+        invitation.setMeetup(meetupRepository.findById(meetupId).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, meetupId)));
+        invitation.setUser(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(UserModel.class, userId)));
         invitation.setStatus(InvitationModel.Status.PENDING);
         invitationRepository.save(invitation);
         return toDto(invitation);
     }
 
     @Override
-    public void patch(long invitationId, InvitationPatchDto invitationPatchDto) throws EntityNotFoundException, DuplicateEntityException, ValueNotAllowedException {
-        if (invitationPatchDto.getStatus() == null) {
+    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
+        List<InvitationDto> invitationDtos = new ArrayList<>();
+
+        for (Long userId : userIds) {
+            InvitationCreationDto invitationCreationDto = new InvitationCreationDto();
+            invitationCreationDto.setMeetupId(meetupId);
+            invitationCreationDto.setUserId(userId);
+            invitationDtos.add(create(invitationCreationDto));
+        }
+
+        return invitationDtos;
+    }
+
+    @Override
+    public void changeStatus(long invitationId, InvitationStatusDto invitationStatusDto) throws EntityNotFoundException, DuplicateEntityException, ValueNotAllowedException {
+        if (invitationStatusDto.getStatus() == null) {
             return;
         }
 
-        InvitationModel invitation = findById(invitationId);
+        InvitationModel invitation = invitationRepository.findById(invitationId).orElseThrow(() -> new EntityNotFoundException(InvitationModel.class, invitationId));
+
         if (invitation.getStatus() == InvitationModel.Status.ACCEPTED) {
-            throw new ValueNotAllowedException("status", invitationPatchDto.getStatus(), "the invitation was already accepted");
+            throw new ValueNotAllowedException("status", invitationStatusDto.getStatus(), "the invitation was already accepted");
         }
 
-        invitation.setStatus(invitationPatchDto.getStatus());
+        invitation.setStatus(invitationStatusDto.getStatus());
         if (invitation.getStatus() == InvitationModel.Status.ACCEPTED) {
             EnrollmentCreationDto enrollmentCreationDto = new EnrollmentCreationDto();
             enrollmentCreationDto.setMeetupId(invitation.getMeetup().getId());
             enrollmentCreationDto.setUserId(invitation.getUser().getId());
-            enrollmentService.create(enrollmentCreationDto);
+            this.enrollmentService.create(enrollmentCreationDto);
         }
 
-        invitationRepository.save(invitation);
+        this.invitationRepository.save(invitation);
     }
 
     private InvitationDto toDto(InvitationModel invitation) {

@@ -6,12 +6,13 @@ import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.exceptions.ValueNotAllowedException;
 import com.santander.meetup.model.EnrollmentModel;
+import com.santander.meetup.model.MeetupModel;
+import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.EnrollmentRepository;
+import com.santander.meetup.repository.MeetupRepository;
+import com.santander.meetup.repository.UserRepository;
 import com.santander.meetup.service.EnrollmentService;
-import com.santander.meetup.service.MeetupService;
-import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,20 +24,15 @@ import java.util.List;
 public class EnrollmentServiceImpl implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
-    private final MeetupService meetupService;
-    private final UserService userService;
+    private final MeetupRepository meetupRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, MeetupService meetupService, UserService userService, ModelMapper modelMapper) {
+    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, MeetupRepository meetupRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.enrollmentRepository = enrollmentRepository;
-        this.meetupService = meetupService;
-        this.userService = userService;
+        this.meetupRepository = meetupRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
-    }
-
-    @Override
-    public EnrollmentModel findById(Long id) throws EntityNotFoundException {
-        return enrollmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(EnrollmentModel.class, id));
     }
 
     @Override
@@ -67,15 +63,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             throw new DuplicateEntityException(EnrollmentModel.class, Arrays.asList(meetupId, userId), Arrays.asList("meetup", "user"));
         }
 
-        enrollment.setMeetup(meetupService.findById(enrollmentCreationDto.getMeetupId()));
-        enrollment.setUser(userService.findById(enrollmentCreationDto.getUserId()));
+        enrollment.setMeetup(meetupRepository.findById(meetupId).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, meetupId)));
+        enrollment.setUser(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(UserModel.class, userId)));
         enrollmentRepository.save(enrollment);
         return toDto(enrollment);
     }
 
     @Override
-    public void checkIn(long enrollmentId) throws EntityNotFoundException, ValueNotAllowedException {
-        EnrollmentModel enrollment = findById(enrollmentId);
+    public void checkIn(long enrollmentId) throws ValueNotAllowedException, EntityNotFoundException {
+        EnrollmentModel enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(() -> new EntityNotFoundException(EnrollmentModel.class, enrollmentId));
 
         if (enrollment.getMeetup().getDay().isAfter(LocalDate.now())) {
             throw new ValueNotAllowedException("checked in", true, "the check-in can't be made before the meetup");

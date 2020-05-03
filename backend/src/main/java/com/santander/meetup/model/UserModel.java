@@ -1,10 +1,8 @@
 package com.santander.meetup.model;
 
 import com.santander.meetup.security.Role;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,9 +32,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @EqualsAndHashCode(of = {"email"})
 public class UserModel implements UserDetails {
 

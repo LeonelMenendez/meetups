@@ -8,7 +8,6 @@ import com.santander.meetup.security.JwtUtil;
 import com.santander.meetup.service.AuthService;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

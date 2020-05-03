@@ -7,15 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface InvitationRepository extends JpaRepository<InvitationModel, Long> {
 
-    Optional<InvitationModel> findById(Long invitationId);
-
     @EntityGraph(attributePaths = {"meetup", "user"})
     List<InvitationModel> findAll(Example invitation);
 
-    boolean existsByMeetupIdAndUserIdAndStatusNot(Long meetupId, Long userId, InvitationModel.Status status);
+    boolean existsByMeetupIdAndUserId(Long meetupId, Long userId);
 }

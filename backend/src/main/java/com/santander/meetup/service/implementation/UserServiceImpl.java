@@ -3,14 +3,11 @@ package com.santander.meetup.service.implementation;
 import com.santander.meetup.dto.request.SignUpDto;
 import com.santander.meetup.dto.response.UserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
-import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.UserRepository;
 import com.santander.meetup.security.Role;
-import com.santander.meetup.service.MeetupService;
 import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,24 +18,14 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, ModelMapper modelMapper) {
-        this.passwordEncoder = passwordEncoder;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
-    }
-
-    @Override
-    public UserModel findById(Long id) throws EntityNotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(UserModel.class, id));
-    }
-
-    @Override
-    public UserModel findByEmail(String email) throws EntityNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(UserModel.class, email));
     }
 
     @Override

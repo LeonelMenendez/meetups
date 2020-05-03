@@ -1,20 +1,16 @@
 package com.santander.meetup.service.implementation;
 
-import com.santander.meetup.dto.request.InvitationCreationDto;
 import com.santander.meetup.dto.request.MeetupCreationDto;
-import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.dto.response.MeetupAdminDto;
 import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
 import com.santander.meetup.model.MeetupModel;
+import com.santander.meetup.model.UserModel;
 import com.santander.meetup.repository.MeetupRepository;
-import com.santander.meetup.service.InvitationService;
+import com.santander.meetup.repository.UserRepository;
 import com.santander.meetup.service.MeetupService;
-import com.santander.meetup.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,35 +22,13 @@ import java.util.List;
 public class MeetupServiceImpl implements MeetupService {
 
     private final MeetupRepository meetupRepository;
-    private final UserService userService;
-    private final InvitationService invitationService;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-    public MeetupServiceImpl(MeetupRepository meetupRepository, UserService userService, @Lazy InvitationService invitationService, ModelMapper modelMapper) {
+    public MeetupServiceImpl(MeetupRepository meetupRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.meetupRepository = meetupRepository;
-        this.userService = userService;
-        this.invitationService = invitationService;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
-    }
-
-    @Override
-    public MeetupModel findById(Long id) throws EntityNotFoundException {
-        return meetupRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, id));
-    }
-
-    @Override
-    public MeetupModel findByIdWithEnrolledUsers(Long id) throws EntityNotFoundException {
-        return meetupRepository.findWithInscribedUsersById(id).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, id));
-    }
-
-    @Override
-    public List<MeetupModel> findAllByOwnerWithEnrolledUsers(Long ownerId) {
-        return meetupRepository.findAllWithInscribedUsersByOwnerId(ownerId);
-    }
-
-    @Override
-    public List<MeetupModel> findAllByUser(Long userId) {
-        return meetupRepository.findAllByEnrolledUsersUserId(userId);
     }
 
     @Override
@@ -77,28 +51,14 @@ public class MeetupServiceImpl implements MeetupService {
             throw new DuplicateEntityException(MeetupModel.class, Arrays.asList(ownerId, day), Arrays.asList("owner", "day"));
         }
 
-        meetup.setOwner(userService.findById(ownerId));
+        meetup.setOwner(userRepository.findById(ownerId).orElseThrow(() -> new EntityNotFoundException(UserModel.class, ownerId)));
         meetupRepository.save(meetup);
         return toAdminDto(meetup);
     }
 
     @Override
-    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
-        List<InvitationDto> invitationDtos = new ArrayList<>();
-
-        for (Long userId : userIds) {
-            InvitationCreationDto invitationCreationDto = new InvitationCreationDto();
-            invitationCreationDto.setMeetupId(meetupId);
-            invitationCreationDto.setUserId(userId);
-            invitationDtos.add(invitationService.create(invitationCreationDto));
-        }
-
-        return invitationDtos;
-    }
-
-    @Override
     public int calculateNeededBeerCases(long meetupId) throws EntityNotFoundException {
-        MeetupModel meetup = findByIdWithEnrolledUsers(meetupId);
+        MeetupModel meetup = meetupRepository.findWithEnrolledUsersById(meetupId).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, meetupId));
         return calculateNeededBeerCases(meetup.getTemperature(), meetup.getEnrolledUsers().size());
     }
 
@@ -118,13 +78,13 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public double getTemperature(long meetupId) throws EntityNotFoundException {
-        MeetupModel meetup = findById(meetupId);
+        MeetupModel meetup = meetupRepository.findWithEnrolledUsersById(meetupId).orElseThrow(() -> new EntityNotFoundException(MeetupModel.class, meetupId));
         return meetup.getTemperature();
     }
 
     @Override
     public List<MeetupAdminDto> getCreatedMeetups(long ownerId) {
-        List<MeetupModel> meetups = findAllByOwnerWithEnrolledUsers(ownerId);
+        List<MeetupModel> meetups = meetupRepository.findAllWithEnrolledUsersByOwnerId(ownerId);
         List<MeetupAdminDto> meetupAdminDtos = new ArrayList<>();
         meetups.forEach(meetup -> meetupAdminDtos.add(toAdminDto(meetup)));
         return meetupAdminDtos;
@@ -132,7 +92,7 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public List<MeetupUserDto> getEnrolledMeetups(long userId) {
-        List<MeetupModel> meetups = findAllByUser(userId);
+        List<MeetupModel> meetups = meetupRepository.findAllByEnrolledUsersUserId(userId);
         List<MeetupUserDto> meetupUserDtos = new ArrayList<>();
         meetups.forEach(meetup -> meetupUserDtos.add(toUserDto(meetup)));
         return meetupUserDtos;

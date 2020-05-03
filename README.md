@@ -42,14 +42,15 @@ $ ng serve
 * [Spring Boot](https://spring.io/projects/spring-boot) - Backend framework.
 * [Angular](https://angular.io/) - Frontend framework.
 * [Angular Material](https://material.angular.io/) - UI component library.
+* [Sass](https://sass-lang.com/) - CSS preprocessor.
 * [Swagger 2.0 (SpringFox)](https://springfox.github.io/springfox/) - JSON API documentation.
 * [Maven](https://maven.apache.org/) - Dependency manager.
 
 ---
 
-# API ☁️
-* Once the backend server is running, you can access the [Swagger UI](api/swagger-ui.html).
-* The API uses [JWT](https://jwt.io/) authentication. In order to access it resources, you need to sign in through the endpoint located in the authentication panel. If the credentials are valid, you will receive a response with the JWT, copy it and paste with the format: ```Bearer {token}``` (without curly braces) to the popup  that is displayed when you click the Authorize button.
+# API ☁
+* Once the backend server is running, you can access the [Swagger UI](http://localhost:8080/api/swagger-ui.html).
+* The API uses [JWT](https://jwt.io/) authentication. In order to access its resources, you need to sign in through the endpoint located in the authentication panel. If the credentials are valid, you will receive a response with the JWT, copy it and paste with the format: ```Bearer {token}``` (without curly braces) to the popup  that is displayed when you click the Authorize button.
 
 ---
 
@@ -61,7 +62,7 @@ $ ng serve
 
 # General information 💬
 * The number of beer cases needed for a meetup is calculated based on these conditions:
-  * If average day temperature of the meetup:
+  * If the average temperature of the meetup day:
     * Is less than 20º -> 0.75 beer(s)/person
     * Is between 20º and 24º -> 1 beer(s)/person
     * Is greater than 24º -> 2 beer(s)/person

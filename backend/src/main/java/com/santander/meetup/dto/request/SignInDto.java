@@ -1,9 +1,7 @@
 package com.santander.meetup.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
@@ -12,8 +10,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SignInDto implements Serializable {
 
     @NotBlank

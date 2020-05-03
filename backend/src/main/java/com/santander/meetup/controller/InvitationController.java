@@ -1,7 +1,7 @@
 package com.santander.meetup.controller;
 
 import com.santander.meetup.dto.request.InvitationCreationDto;
-import com.santander.meetup.dto.request.InvitationPatchDto;
+import com.santander.meetup.dto.request.InvitationStatusDto;
 import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.endpoint.InvitationEndpoint;
 import com.santander.meetup.exceptions.DuplicateEntityException;
@@ -11,7 +11,6 @@ import com.santander.meetup.model.InvitationModel;
 import com.santander.meetup.service.InvitationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +30,11 @@ import java.util.List;
 @RequestMapping(value = InvitationEndpoint.BASE)
 public class InvitationController {
 
-    @Autowired
-    InvitationService invitationService;
+    private final InvitationService invitationService;
+
+    public InvitationController(InvitationService invitationService) {
+        this.invitationService = invitationService;
+    }
 
     /**
      * Creates a new invitation.
@@ -44,7 +46,7 @@ public class InvitationController {
      */
     @ApiOperation(value = "Creates a new invitation")
     @PostMapping()
-    public ResponseEntity<InvitationDto> create(@Valid @RequestBody InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException {
+    public ResponseEntity<InvitationDto> create(@Valid @RequestBody InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
         return new ResponseEntity<>(invitationService.create(invitationCreationDto), HttpStatus.CREATED);
     }
 
@@ -65,18 +67,18 @@ public class InvitationController {
     }
 
     /**
-     * Patches an invitation.
+     * Changes an invitation status.
      *
-     * @param invitationId       the id of the invitation that will be patched.
-     * @param invitationPatchDto the invitation patch request body.
+     * @param invitationId        the id of the invitation that will be patched.
+     * @param invitationStatusDto the invitation status request body.
      * @throws EntityNotFoundException  if the invitation wasn't found.
      * @throws DuplicateEntityException if the user is already enrolled in the meetup of the invitation.
-     * @throws ValueNotAllowedException if the invitation was already accepted.
+     * @throws ValueNotAllowedException if the invitation was already accepted or it's still pending.
      */
-    @ApiOperation(value = "Patches an invitation")
-    @PatchMapping(InvitationEndpoint.INVITATION)
-    public ResponseEntity<Void> patch(@Valid @PathVariable long invitationId, @Valid @RequestBody InvitationPatchDto invitationPatchDto) throws EntityNotFoundException, DuplicateEntityException, ValueNotAllowedException {
-        invitationService.patch(invitationId, invitationPatchDto);
+    @ApiOperation(value = "Changes an invitation status", notes = "If the invitation is accepted a new enrollment will be created")
+    @PatchMapping(InvitationEndpoint.INVITATION_STATUS)
+    public ResponseEntity<Void> patch(@Valid @PathVariable long invitationId, @Valid @RequestBody InvitationStatusDto invitationStatusDto) throws EntityNotFoundException, DuplicateEntityException, ValueNotAllowedException {
+        invitationService.changeStatus(invitationId, invitationStatusDto);
         return ResponseEntity.noContent().build();
     }
 }

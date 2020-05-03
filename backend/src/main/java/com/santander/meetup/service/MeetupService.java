@@ -1,51 +1,15 @@
 package com.santander.meetup.service;
 
 import com.santander.meetup.dto.request.MeetupCreationDto;
-import com.santander.meetup.dto.response.InvitationDto;
 import com.santander.meetup.dto.response.MeetupAdminDto;
 import com.santander.meetup.dto.response.MeetupUserDto;
 import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.exceptions.EntityNotFoundException;
-import com.santander.meetup.model.MeetupModel;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface MeetupService {
-
-    /**
-     * Finds a meetup by id.
-     *
-     * @param id the id to be found.
-     * @return a meetup with the given id.
-     * @throws EntityNotFoundException if the meetup wasn't found.
-     */
-    MeetupModel findById(Long id) throws EntityNotFoundException;
-
-    /**
-     * Finds a meetup by id with the enrolled users to it.
-     *
-     * @param id the id to be found.
-     * @return a meetup with the given id and the enrolled users to it.
-     * @throws EntityNotFoundException if the meetup wasn't found.
-     */
-    MeetupModel findByIdWithEnrolledUsers(Long id) throws EntityNotFoundException;
-
-    /**
-     * Finds all the meetups by owner id with the enrolled users to it.
-     *
-     * @param ownerId the owner id to be found.
-     * @return a list of meetups with the given owner id and the enrolled users to it.
-     */
-    Iterable<MeetupModel> findAllByOwnerWithEnrolledUsers(Long ownerId);
-
-    /**
-     * Finds all the meetups to which the user is enrolled to.
-     *
-     * @param userId the user id to be found.
-     * @return a list of meetups to which the user is enrolled to.
-     */
-    Iterable<MeetupModel> findAllByUser(Long userId);
 
     /**
      * Determines if a meetup already exists by the given id.
@@ -73,17 +37,6 @@ public interface MeetupService {
      * @throws EntityNotFoundException  if the given owner user wasn't found.
      */
     MeetupAdminDto create(MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException;
-
-    /**
-     * Creates a list of new invitations for the given meetup.
-     *
-     * @param meetupId the meetup id to which the invitations will be sent.
-     * @param userIds  a list with the user's ids that will be invited.
-     * @return the created invitations.
-     * @throws DuplicateEntityException if one of the given invitations already exists.
-     * @throws EntityNotFoundException  if the given meetup or user wasn't found.
-     */
-    List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Calculates the amount of beer cases needed for the given meetup.

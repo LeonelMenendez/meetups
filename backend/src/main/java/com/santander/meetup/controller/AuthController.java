@@ -8,7 +8,6 @@ import com.santander.meetup.exceptions.DuplicateEntityException;
 import com.santander.meetup.service.AuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +22,11 @@ import javax.validation.Valid;
 @RequestMapping(value = AuthEndpoint.BASE)
 public class AuthController {
 
-    @Autowired
-    AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * Signs up a new user.

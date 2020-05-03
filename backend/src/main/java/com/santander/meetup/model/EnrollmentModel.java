@@ -1,8 +1,7 @@
 package com.santander.meetup.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +16,8 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "enrollment", uniqueConstraints = @UniqueConstraint(columnNames = {"meetup_id", "user_id"}))
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@EqualsAndHashCode(of = {"meetup", "user"})
 public class EnrollmentModel {
 
     @Id
