@@ -84,8 +84,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request {@code WebRequest}.
      * @return a {@code ResponseEntity} object with the error handled.
      */
-    @Override
     @ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         int code = ApiErrorCode.UNSUPPORTED_MEDIA_TYPE;
         HttpStatus httpStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE;

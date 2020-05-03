@@ -75,8 +75,8 @@ public class MeetupController {
      */
     @ApiOperation(value = "Retrieves the amount of beer cases needed for the given meetup")
     @GetMapping(MeetupEndpoint.BEER_CASES)
-    public ResponseEntity<Integer> getNeededBeerCases(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
-        return new ResponseEntity<>(meetupService.calculateNeededBeerCases(meetupId), HttpStatus.OK);
+    public ResponseEntity<Integer> getBeerCasesNeeded(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
+        return new ResponseEntity<>(meetupService.calculateBeerCasesNeeded(meetupId), HttpStatus.OK);
     }
 
     /**

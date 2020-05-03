@@ -43,7 +43,6 @@ public class WeatherServiceImpl implements WeatherService {
                 .bodyToMono(DailyForecastDto.class)
                 .block();
 
-
         return dailyForecast.getDayForecastDtos();
     }
 

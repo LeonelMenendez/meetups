@@ -51,22 +51,23 @@ public class SwaggerConfig {
 
     @Bean
     public Docket api() {
-        List<ResponseMessage> responseMessages = getDefaultResponses();
-        Set<String> DEFAULT_PRODUCES_AND_CONSUMES = ImmutableSet.of(MediaType.APPLICATION_JSON_VALUE);
+        final String BASE_PACKAGE = "io.github.lzmz.meetups.controller";
+        final List<ResponseMessage> RESPONSE_MESSAGES = getDefaultResponses();
+        final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = ImmutableSet.of(MediaType.APPLICATION_JSON_VALUE);
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.santander.meetup.controller"))
+                .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo())
                 .produces(DEFAULT_PRODUCES_AND_CONSUMES)
                 .consumes(DEFAULT_PRODUCES_AND_CONSUMES)
                 .useDefaultResponseMessages(false)
-                .globalResponseMessage(RequestMethod.GET, responseMessages)
-                .globalResponseMessage(RequestMethod.POST, responseMessages)
-                .globalResponseMessage(RequestMethod.PUT, responseMessages)
-                .globalResponseMessage(RequestMethod.DELETE, responseMessages)
+                .globalResponseMessage(RequestMethod.GET, RESPONSE_MESSAGES)
+                .globalResponseMessage(RequestMethod.POST, RESPONSE_MESSAGES)
+                .globalResponseMessage(RequestMethod.PUT, RESPONSE_MESSAGES)
+                .globalResponseMessage(RequestMethod.DELETE, RESPONSE_MESSAGES)
                 .additionalModels(typeResolver.resolve(ApiError.class))
                 .securitySchemes(Lists.newArrayList(apiKey()))
                 .securityContexts(Arrays.asList(securityContext()));

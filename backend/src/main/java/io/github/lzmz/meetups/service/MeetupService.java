@@ -28,7 +28,7 @@ public interface MeetupService {
      * @return the amount of beer cases needed.
      * @throws EntityNotFoundException if the meetup wasn't found.
      */
-    int calculateNeededBeerCases(long meetupId) throws EntityNotFoundException;
+    int calculateBeerCasesNeeded(long meetupId) throws EntityNotFoundException;
 
     /**
      * Calculates the beer cases needed based on temperature and number of participants.
@@ -37,7 +37,7 @@ public interface MeetupService {
      * @param participants the number of participants that will be used to calculate the required beer cases.
      * @return the beer cases needed.
      */
-    int calculateNeededBeerCases(double temperature, int participants);
+    int calculateBeerCasesNeeded(double temperature, int participants);
 
     /**
      * Retrieves the day's temperature of the meeting.

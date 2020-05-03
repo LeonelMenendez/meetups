@@ -16,5 +16,5 @@ public class MeetupAdminDto implements Serializable {
     private String ownerName;
     private String ownerEmail;
     private double temperature;
-    private Integer beerCasesNeeded;
+    private int beerCasesNeeded;
 }

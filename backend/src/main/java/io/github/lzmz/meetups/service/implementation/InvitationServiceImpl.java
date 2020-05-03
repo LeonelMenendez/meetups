@@ -1,5 +1,6 @@
 package io.github.lzmz.meetups.service.implementation;
 
+import io.github.lzmz.meetups.dto.mapper.InvitationMapper;
 import io.github.lzmz.meetups.dto.request.EnrollmentCreationDto;
 import io.github.lzmz.meetups.dto.request.InvitationCreationDto;
 import io.github.lzmz.meetups.dto.request.InvitationStatusDto;
@@ -15,7 +16,6 @@ import io.github.lzmz.meetups.repository.MeetupRepository;
 import io.github.lzmz.meetups.repository.UserRepository;
 import io.github.lzmz.meetups.service.EnrollmentService;
 import io.github.lzmz.meetups.service.InvitationService;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -30,38 +30,36 @@ public class InvitationServiceImpl implements InvitationService {
     private final MeetupRepository meetupRepository;
     private final UserRepository userRepository;
     private final EnrollmentService enrollmentService;
-    private final ModelMapper modelMapper;
+    private final InvitationMapper invitationMapper;
 
-    public InvitationServiceImpl(InvitationRepository invitationRepository, MeetupRepository meetupRepository, UserRepository userRepository, EnrollmentService enrollmentService, ModelMapper modelMapper) {
+    public InvitationServiceImpl(InvitationRepository invitationRepository, MeetupRepository meetupRepository, UserRepository userRepository, EnrollmentService enrollmentService, InvitationMapper invitationMapper) {
         this.invitationRepository = invitationRepository;
         this.meetupRepository = meetupRepository;
         this.userRepository = userRepository;
         this.enrollmentService = enrollmentService;
-        this.modelMapper = modelMapper;
+        this.invitationMapper = invitationMapper;
     }
 
     @Override
     public List<InvitationDto> findAll(Long meetupId, Long userId, InvitationModel.Status status) {
         MeetupModel meetup = new MeetupModel();
-        UserModel user = new UserModel();
-
         meetup.setId(meetupId);
+
+        UserModel user = new UserModel();
         user.setId(userId);
 
         InvitationModel invitationExample = new InvitationModel();
         invitationExample.setMeetup(meetup);
         invitationExample.setUser(user);
         invitationExample.setStatus(status);
-        List<InvitationModel> invitations = invitationRepository.findAll(Example.of(invitationExample));
 
-        List<InvitationDto> invitationDtos = new ArrayList<>();
-        invitations.forEach(invitation -> invitationDtos.add(toDto(invitation)));
-        return invitationDtos;
+        List<InvitationModel> invitations = invitationRepository.findAll(Example.of(invitationExample));
+        return invitationMapper.invitationsToInvitationDtos(invitations);
     }
 
     @Override
     public InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
-        InvitationModel invitation = modelMapper.map(invitationCreationDto, InvitationModel.class);
+        InvitationModel invitation = invitationMapper.invitationCreationDtoToInvitation(invitationCreationDto);
         long meetupId = invitationCreationDto.getMeetupId();
         long userId = invitationCreationDto.getUserId();
 
@@ -73,7 +71,7 @@ public class InvitationServiceImpl implements InvitationService {
         invitation.setUser(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(UserModel.class, userId)));
         invitation.setStatus(InvitationModel.Status.PENDING);
         invitationRepository.save(invitation);
-        return toDto(invitation);
+        return invitationMapper.invitationToInvitationDto(invitation);
     }
 
     @Override
@@ -111,16 +109,5 @@ public class InvitationServiceImpl implements InvitationService {
         }
 
         this.invitationRepository.save(invitation);
-    }
-
-    private InvitationDto toDto(InvitationModel invitation) {
-        InvitationDto invitationDto = modelMapper.map(invitation, InvitationDto.class);
-        invitationDto.setMeetupId(invitation.getMeetup().getId());
-        invitationDto.setUserId(invitation.getUser().getId());
-        invitationDto.setMeetupOwnerName(invitation.getMeetup().getOwner().getName());
-        invitationDto.setMeetupOwnerEmail(invitation.getMeetup().getOwner().getEmail());
-        invitationDto.setMeetupDay(invitation.getMeetup().getDay());
-        invitationDto.setMeetupTemperature(invitation.getMeetup().getTemperature());
-        return invitationDto;
     }
 }

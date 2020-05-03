@@ -78,4 +78,4 @@ This project is licensed under the terms of the **MIT** license.
 
 ---
 ## Author 👦
-> [GitHub](https://github.com/LeonelMenendez) &nbsp;&middot;&nbsp; [LinkedIn](https://www.linkedin.com/in/leonel-menendez/) &nbsp;&middot;&nbsp;
+> [GitHub](https://github.com/lzmz) &nbsp;&middot;&nbsp; [LinkedIn](https://www.linkedin.com/in/leonel-menendez/) &nbsp;&middot;&nbsp;

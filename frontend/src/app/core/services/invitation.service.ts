@@ -13,8 +13,8 @@ import { RequestService } from './request.service';
 export class InvitationService {
   private END_POINT_BASE = `${environment.API_URL}/invitations`;
 
-  private END_POINT_PATCH(invitationId: number): string {
-    return `${this.END_POINT_BASE}/${invitationId}`;
+  private END_POINT_STATUS(invitationId: number): string {
+    return `${this.END_POINT_BASE}/${invitationId}/status`;
   }
 
   constructor(private http: HttpClient, private requestService: RequestService) {}
@@ -25,7 +25,7 @@ export class InvitationService {
   }
 
   changeStatus(invitationId: number, status: InvitationStatus): Observable<void> {
-    return this.http.patch<void>(this.END_POINT_PATCH(invitationId), {
+    return this.http.patch<void>(this.END_POINT_STATUS(invitationId), {
       status,
     });
   }
