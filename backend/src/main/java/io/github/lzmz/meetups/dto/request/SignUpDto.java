@@ -1,6 +1,6 @@
 package io.github.lzmz.meetups.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,17 +13,18 @@ import java.io.Serializable;
 public class SignUpDto implements Serializable {
 
     @NotBlank
-    @ApiModelProperty(required = true)
+    @Schema(required = true)
     private String name;
 
     @NotBlank
     @Email
-    @ApiModelProperty(required = true)
+    @Schema(required = true)
     private String email;
 
     @NotBlank
-    @ApiModelProperty(required = true)
+    @Schema(required = true)
     private String password;
 
+    @Schema(defaultValue = "false")
     private boolean admin;
 }

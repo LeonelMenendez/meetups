@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static io.github.lzmz.meetups.config.SwaggerConfig.SWAGGER_AUTH_WHITELIST;
+import static io.github.lzmz.meetups.config.SwaggerConfig.SWAGGER_WHITELIST;
 
 @EnableWebSecurity
 @Configuration
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                     /************ SWAGGER ************/
-                    .antMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
+                    .antMatchers(SWAGGER_WHITELIST).permitAll()
 
                     /************ AUTH ************/
                     .antMatchers(HttpMethod.POST, AuthEndpoint.BASE + AuthEndpoint.SIGN_UP).permitAll()

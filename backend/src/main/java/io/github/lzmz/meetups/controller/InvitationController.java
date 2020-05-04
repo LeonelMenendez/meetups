@@ -9,8 +9,8 @@ import io.github.lzmz.meetups.exceptions.EntityNotFoundException;
 import io.github.lzmz.meetups.exceptions.ValueNotAllowedException;
 import io.github.lzmz.meetups.model.InvitationModel;
 import io.github.lzmz.meetups.service.InvitationService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Invitations")
+@Tag(name = "Invitations")
 @RestController
 @RequestMapping(value = InvitationEndpoint.BASE)
 public class InvitationController {
@@ -44,7 +44,7 @@ public class InvitationController {
      * @throws DuplicateEntityException if the invitation already exists.
      * @throws EntityNotFoundException  if the given meetup or user wasn't found.
      */
-    @ApiOperation(value = "Creates a new invitation")
+    @Operation(summary = "Creates a new invitation")
     @PostMapping()
     public ResponseEntity<InvitationDto> create(@Valid @RequestBody InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
         return new ResponseEntity<>(invitationService.create(invitationCreationDto), HttpStatus.CREATED);
@@ -58,7 +58,7 @@ public class InvitationController {
      * @param status   the status that will be filtered.
      * @return a list of invitations filtered by the given parameters.
      */
-    @ApiOperation(value = "Retrieves a list of invitations filtered by the given parameters")
+    @Operation(summary = "Retrieves a list of invitations filtered by the given parameters")
     @GetMapping()
     public ResponseEntity<List<InvitationDto>> findAll(@Valid @RequestParam(required = false) Long meetupId,
                                                        @Valid @RequestParam(required = false) Long userId,
@@ -75,7 +75,7 @@ public class InvitationController {
      * @throws DuplicateEntityException if the user is already enrolled in the meetup of the invitation.
      * @throws ValueNotAllowedException if the invitation was already accepted.
      */
-    @ApiOperation(value = "Changes an invitation status", notes = "If the invitation is accepted a new enrollment will be created")
+    @Operation(summary = "Changes an invitation status", description = "If the invitation is accepted a new enrollment will be created")
     @PatchMapping(InvitationEndpoint.INVITATION_STATUS)
     public ResponseEntity<Void> patch(@Valid @PathVariable long invitationId, @Valid @RequestBody InvitationStatusDto invitationStatusDto) throws EntityNotFoundException, DuplicateEntityException, ValueNotAllowedException {
         invitationService.changeStatus(invitationId, invitationStatusDto);

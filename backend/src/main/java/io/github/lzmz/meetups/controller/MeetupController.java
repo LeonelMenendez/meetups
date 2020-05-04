@@ -9,8 +9,8 @@ import io.github.lzmz.meetups.exceptions.EntityNotFoundException;
 import io.github.lzmz.meetups.exceptions.ValueNotAllowedException;
 import io.github.lzmz.meetups.service.InvitationService;
 import io.github.lzmz.meetups.service.MeetupService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Meetups")
+@Tag(name = "Meetups")
 @RestController
 @RequestMapping(value = MeetupEndpoint.BASE)
 public class MeetupController {
@@ -44,7 +44,7 @@ public class MeetupController {
      * @throws DuplicateEntityException if the meetup already exists.
      * @throws EntityNotFoundException  if the given owner user wasn't found.
      */
-    @ApiOperation(value = "Creates a new meetup")
+    @Operation(summary = "Creates a new meetup")
     @PostMapping()
     public ResponseEntity<MeetupAdminDto> create(@Valid @RequestBody MeetupCreationDto meetupCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(meetupService.create(meetupCreationDto), HttpStatus.CREATED);
@@ -59,7 +59,7 @@ public class MeetupController {
      * @throws DuplicateEntityException if one of the given invitations already exists.
      * @throws EntityNotFoundException  if the given meetup or user wasn't found.
      */
-    @ApiOperation(value = "Creates a new list of invitations for the given meetup")
+    @Operation(summary = "Creates a new list of invitations for the given meetup")
     @PostMapping(MeetupEndpoint.INVITATIONS)
     public ResponseEntity<List<InvitationDto>> create(@Valid @PathVariable long meetupId,
                                                       @Valid @RequestBody List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
@@ -73,7 +73,7 @@ public class MeetupController {
      * @return the amount of beer cases needed.
      * @throws EntityNotFoundException if the given meetup wasn't found.
      */
-    @ApiOperation(value = "Retrieves the amount of beer cases needed for the given meetup")
+    @Operation(summary = "Retrieves the amount of beer cases needed for the given meetup")
     @GetMapping(MeetupEndpoint.BEER_CASES)
     public ResponseEntity<Integer> getBeerCasesNeeded(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
         return new ResponseEntity<>(meetupService.calculateBeerCasesNeeded(meetupId), HttpStatus.OK);
@@ -86,7 +86,7 @@ public class MeetupController {
      * @return the day's temperature of the meetup.
      * @throws EntityNotFoundException if the given meetup wasn't found.
      */
-    @ApiOperation(value = "Retrieves the day's temperature of the meetup")
+    @Operation(summary = "Retrieves the day's temperature of the meetup")
     @GetMapping(MeetupEndpoint.TEMPERATURE)
     public ResponseEntity<Double> getTemperature(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
         return new ResponseEntity<>(meetupService.getTemperature(meetupId), HttpStatus.OK);

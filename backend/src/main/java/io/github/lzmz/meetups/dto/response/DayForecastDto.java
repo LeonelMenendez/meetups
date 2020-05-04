@@ -1,7 +1,7 @@
 package io.github.lzmz.meetups.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +16,6 @@ public class DayForecastDto implements Serializable {
     private LocalDate day;
 
     @JsonAlias("temp")
-    @ApiParam("Average Temperature")
+    @Parameter(name = "Average Temperature")
     private double temperature;
 }

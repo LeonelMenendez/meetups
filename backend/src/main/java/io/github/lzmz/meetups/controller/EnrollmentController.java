@@ -7,8 +7,8 @@ import io.github.lzmz.meetups.exceptions.DuplicateEntityException;
 import io.github.lzmz.meetups.exceptions.EntityNotFoundException;
 import io.github.lzmz.meetups.exceptions.ValueNotAllowedException;
 import io.github.lzmz.meetups.service.EnrollmentService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@Api(tags = "Enrollments")
+@Tag(name = "Enrollments")
 @RestController
 @RequestMapping(value = EnrollmentEndpoint.BASE)
 public class EnrollmentController {
@@ -39,7 +39,7 @@ public class EnrollmentController {
      * @throws DuplicateEntityException if the enrollment already exists.
      * @throws EntityNotFoundException  if the given meetup or user wasn't found.
      */
-    @ApiOperation(value = "Creates a new enrollment")
+    @Operation(summary = "Creates a new enrollment")
     @PostMapping()
     public ResponseEntity<EnrollmentDto> create(@Valid @RequestBody EnrollmentCreationDto enrollmentCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(enrollmentService.create(enrollmentCreationDto), HttpStatus.CREATED);
@@ -52,7 +52,7 @@ public class EnrollmentController {
      * @throws EntityNotFoundException  if the given enrollment wasn't found.
      * @throws ValueNotAllowedException if the check-in couldn't be made.
      */
-    @ApiOperation(value = "Makes the check-in of the user associated to the given enrollment")
+    @Operation(summary = "Makes the check-in of the user associated to the given enrollment")
     @PatchMapping(EnrollmentEndpoint.CHECK_IN)
     public ResponseEntity<Void> checkIn(@Valid @PathVariable long enrollmentId) throws EntityNotFoundException, ValueNotAllowedException {
         enrollmentService.checkIn(enrollmentId);

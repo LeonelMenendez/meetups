@@ -1,6 +1,6 @@
 package io.github.lzmz.meetups.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,14 +13,14 @@ import java.time.LocalDate;
 public class MeetupCreationDto implements Serializable {
 
     @NotNull
-    @ApiModelProperty(required = true)
+    @Schema(required = true)
     private LocalDate day;
 
     @NotNull
-    @ApiModelProperty(required = true)
+    @Schema(required = true)
     private Long ownerId;
 
     @NotNull
-    @ApiModelProperty(required = true)
+    @Schema(required = true)
     private Double temperature;
 }
