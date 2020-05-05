@@ -1,9 +1,10 @@
 @import '_variables';
 
-.header {
-  height: 100vh;
-  font-size: 1.5rem;
-  overflow: hidden;
+$text-color: $accent;
+
+mat-toolbar {
+  background-color: white;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
 }
 
 .spacer {
@@ -11,21 +12,32 @@
 }
 
 .brand-name {
-  color: $accent;
+  color: $text-color;
   font-size: 1.8rem;
   margin-left: 2rem;
 }
 
-.menu,
-.sidenav {
+.toolbar-list,
+.sidenav-list {
+  a {
+    color: $text-color;
+    opacity: 0.5;
+  }
+
+  .active {
+    opacity: 1;
+    font-weight: bold;
+  }
+}
+
+.toolbar-list {
   mat-icon {
-    color: $accent;
     margin: 0 0.4rem;
   }
 }
 
-.sidenav {
+.sidenav-list {
   mat-icon {
-    margin-right: 1.5rem;
+    margin: 0 1.5rem;
   }
 }

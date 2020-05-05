@@ -1,57 +1,61 @@
-<div class="header">
-  <mat-toolbar>
-    <mat-toolbar-row>
-      <button mat-icon-button (click)="sidenav.toggle()" fxShow fxHide.gt-sm>
-        <mat-icon>menu</mat-icon>
-      </button>
-      <a class="link" routerLink="/home" class="brand-name">Meetups!</a>
-      <span class="spacer"></span>
-      <div class="menu" fxShow fxHide.lt-md>
-        <a mat-button routerLink="/home" routerLinkActive="active" class="icon-text">
-          <mat-icon>home</mat-icon>
-          <span>Home</span>
-        </a>
+<mat-sidenav-container fullscreen>
+  <mat-sidenav #sidenav mode="over">
+    <mat-nav-list class="sidenav-list">
+      <a mat-list-item routerLink="/home" routerLinkActive="active" class="icon-text icon-sidenav">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </a>
 
-        <ng-template [ngxPermissionsOnly]="Role.USER">
-          <a mat-button routerLink="/invitations" routerLinkActive="active" class="icon-text">
-            <mat-icon>email</mat-icon>
-            <span>Invitations</span>
+      <ng-template [ngxPermissionsOnly]="Role.USER">
+        <a
+          mat-list-item
+          routerLink="/invitations"
+          routerLinkActive="active"
+          class="icon-text icon-sidenav"
+        >
+          <mat-icon>email</mat-icon>
+          <span>Invitations</span>
+        </a>
+      </ng-template>
+
+      <a mat-list-item (click)="signOut()" class="icon-text icon-sidenav">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Sign out</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar>
+      <mat-toolbar-row>
+        <button mat-icon-button (click)="sidenav.toggle()" fxShow fxHide.gt-sm>
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a class="link" routerLink="/home" class="brand-name">Meetups!</a>
+        <span class="spacer"></span>
+        <div class="toolbar-list" fxShow fxHide.lt-md>
+          <a mat-button routerLink="/home" routerLinkActive="active" class="icon-text">
+            <mat-icon>home</mat-icon>
+            <span>Home</span>
           </a>
-        </ng-template>
 
-        <a mat-button (click)="signOut()" class="icon-text">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Sign out</span>
-        </a>
-      </div>
-    </mat-toolbar-row>
-  </mat-toolbar>
+          <ng-template [ngxPermissionsOnly]="Role.USER">
+            <a mat-button routerLink="/invitations" routerLinkActive="active" class="icon-text">
+              <mat-icon>email</mat-icon>
+              <span>Invitations</span>
+            </a>
+          </ng-template>
 
-  <mat-sidenav-container fxFlexFill>
-    <mat-sidenav #sidenav>
-      <mat-nav-list class="sidenav">
-        <a mat-list-item routerLink="/home" routerLinkActive="active" class="icon-text">
-          <mat-icon>home</mat-icon>
-          <span>Home</span>
-        </a>
-
-        <ng-template [ngxPermissionsOnly]="Role.USER">
-          <a mat-list-item routerLink="/invitations" routerLinkActive="active" class="icon-text">
-            <mat-icon>email</mat-icon>
-            <span>Invitations</span>
+          <a mat-button (click)="signOut()" class="icon-text">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Sign out</span>
           </a>
-        </ng-template>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
 
-        <a mat-list-item (click)="signOut()" class="icon-text">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Sign out</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content fxFlexFill>
-      <div class="container">
-        <router-outlet></router-outlet>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+    <div class="main-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
