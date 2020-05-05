@@ -44,14 +44,13 @@ public class SwaggerConfig {
 
     private static final String API_ERROR_NAME = ApiError.class.getSimpleName();
     private static final Schema API_ERROR_SCHEMA = new Schema().$ref(API_ERROR_NAME);
-    private static final MediaType MEDIA_TYPE = new MediaType().schema(API_ERROR_SCHEMA);
-    private static final MediaType API_ERROR_MEDIA_TYPE = MEDIA_TYPE.schema(API_ERROR_SCHEMA);
+    private static final MediaType API_ERROR_MEDIA_TYPE = new MediaType().schema(API_ERROR_SCHEMA);
     private static final Content API_ERROR_CONTENT = new Content().addMediaType(JSON_MEDIA_TYPE, API_ERROR_MEDIA_TYPE);
 
     /**
-     * Defines information about the API.
+     * Defines metadata about the API.
      *
-     * @return the information about the API.
+     * @return the metadata about the API.
      */
     private Info info() {
         return new Info()
@@ -62,9 +61,9 @@ public class SwaggerConfig {
     }
 
     /**
-     * Defines information about the author.
+     * Defines the contact information for the exposed API.
      *
-     * @return the information about the author.
+     * @return the contact information.
      */
     private Contact contact() {
         return new Contact().name("Leonel Menendez")
@@ -73,18 +72,18 @@ public class SwaggerConfig {
     }
 
     /**
-     * Defines the license.
+     * Defines the license information for the exposed API.
      *
-     * @return the license.
+     * @return the license information.
      */
     private License license() {
         return new License().name("Apache 2.0").url("http://www.apache.org/licenses/LICENSE-2.0.html");
     }
 
     /**
-     * Defines the security schema.
+     * Defines the security scheme for the exposed API.
      *
-     * @return the security schema.
+     * @return the security scheme.
      */
     public SecurityScheme security() {
         return new SecurityScheme()
@@ -94,17 +93,22 @@ public class SwaggerConfig {
                 .bearerFormat(SECURITY_SCHEME_BEARER_FORMAT);
     }
 
+    /**
+     * Defines the components for the exposed API.
+     *
+     * @return the components.
+     */
+    public Components components() {
+        return new Components()
+                .addSecuritySchemes(SECURITY_SCHEME_NAME, security());
+    }
+
     @Bean
     public OpenAPI api() {
         return new OpenAPI()
-                .components(
-                        new Components()
-                                .addSecuritySchemes(SECURITY_SCHEME_NAME, security())
-                                .addSchemas(API_ERROR_NAME, new Schema().$ref(API_ERROR_NAME))
-                )
+                .components(components())
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .info(info());
-
     }
 
     @Bean
