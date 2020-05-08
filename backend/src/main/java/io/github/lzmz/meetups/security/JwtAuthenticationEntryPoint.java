@@ -20,6 +20,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 
     @Override
     public void commence(HttpServletRequest req, HttpServletResponse res, AuthenticationException authException) throws IOException {
-        securityResponder.jwtUnexpected(req, res);
+        securityResponder.unexpectedJwt(res);
     }
 }

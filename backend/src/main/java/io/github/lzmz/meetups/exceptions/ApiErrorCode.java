@@ -14,9 +14,11 @@ public class ApiErrorCode {
     public static int DUPLICATE_ENTITY = 101;
     public static int VALUE_NOT_ALLOWED = 102;
     public static int BAD_CREDENTIALS = 120;
-    public static int JWT_UNEXPECTED = 121;
-    public static int JWT_EXPIRED = 122;
-    public static int JWT_UNSUPPORTED = 123;
-    public static int JWT_MALFORMED = 124;
-    public static int ACCESS_DENIED = 125;
+    public static int ACCESS_DENIED = 121;
+    public static int JWT_UNSUPPORTED = 122;
+    public static int JWT_MALFORMED = 123;
+    public static int JWT_INVALID_SIGNATURE = 124;
+    public static int JWT_EXPIRED = 125;
+    public static int JWT_ILLEGAL_ARGUMENT = 126;
+    public static int JWT_UNEXPECTED = 127;
 }
