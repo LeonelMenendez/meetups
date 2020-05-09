@@ -14,13 +14,13 @@ public interface MeetupRepository extends JpaRepository<MeetupModel, Long> {
 
     Optional<MeetupModel> findById(Long id);
 
-    @EntityGraph(attributePaths = {"enrolledUsers"})
+    @EntityGraph(attributePaths = {"enrolledUsers.meetup", "enrolledUsers.meetup.owner", "enrolledUsers.user"})
     Optional<MeetupModel> findWithEnrolledUsersById(Long id);
 
-    @EntityGraph(attributePaths = {"enrolledUsers"})
+    @EntityGraph(attributePaths = {"enrolledUsers.meetup", "enrolledUsers.meetup.owner", "enrolledUsers.user"})
     List<MeetupModel> findAllWithEnrolledUsersByOwnerId(Long ownerId);
 
-    @EntityGraph(attributePaths = {"enrolledUsers"})
+    @EntityGraph(attributePaths = {"enrolledUsers.meetup", "enrolledUsers.meetup.owner", "enrolledUsers.user"})
     List<MeetupModel> findAllByEnrolledUsersUserId(Long userId);
 
     boolean existsById(Long id);

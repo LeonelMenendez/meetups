@@ -1,6 +1,6 @@
 package io.github.lzmz.meetups.endpoint;
 
-public class UserEndpoint {
+public final class UserEndpoint {
     public static final String BASE = "/users";
     public static final String ANT_BASE = "/users*";
     public static final String ENROLLMENTS = "/{userId}/enrollments";

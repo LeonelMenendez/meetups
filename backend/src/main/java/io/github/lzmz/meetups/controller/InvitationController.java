@@ -46,7 +46,7 @@ public class InvitationController {
      */
     @Operation(summary = "Creates a new invitation")
     @PostMapping()
-    public ResponseEntity<InvitationDto> create(@Valid @RequestBody InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
+    public ResponseEntity<InvitationDto> create(@Valid @RequestBody InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(invitationService.create(invitationCreationDto), HttpStatus.CREATED);
     }
 

@@ -58,7 +58,7 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
+    public InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException {
         InvitationModel invitation = invitationMapper.invitationCreationDtoToInvitation(invitationCreationDto);
         long meetupId = invitationCreationDto.getMeetupId();
         long userId = invitationCreationDto.getUserId();
@@ -75,7 +75,7 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
+    public List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
         List<InvitationDto> invitationDtos = new ArrayList<>();
 
         for (Long userId : userIds) {

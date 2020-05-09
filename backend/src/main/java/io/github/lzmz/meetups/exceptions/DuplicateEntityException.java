@@ -3,7 +3,7 @@ package io.github.lzmz.meetups.exceptions;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public class DuplicateEntityException extends CustomException {
 
     public DuplicateEntityException(Class<?> entityClass, Object value, String field) {
         this.entityName = getEntityName(entityClass);
-        this.values = Arrays.asList(value);
-        this.uniqueFields = Arrays.asList(field);
+        this.values = Collections.singletonList(value);
+        this.uniqueFields = Collections.singletonList(field);
     }
 }

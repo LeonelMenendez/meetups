@@ -1,5 +1,6 @@
 package io.github.lzmz.meetups.security;
 
+import io.github.lzmz.meetups.config.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -7,13 +8,11 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,23 +20,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class JwtUtil implements Serializable {
+public class JwtUtil {
 
     public static final String HEADER_AUTHORIZATION_KEY = "Authorization";
     public static final String TOKEN_BEARER_PREFIX = "Bearer ";
     public static final String AUTHORITIES_KEY = "authorities";
 
-    /**
-     * Secret that will be used to sign the JWT.
-     */
-    @Value("${jwt.secret}")
-    private String secret;
+    private final JwtProperties jwtProperties;
 
-    /**
-     * Token duration in seconds.
-     */
-    @Value("${jwt.token-duration}")
-    private long tokenDuration;
+    public JwtUtil(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
 
     /**
      * Retrieves all the claims from the JWT.
@@ -52,7 +45,7 @@ public class JwtUtil implements Serializable {
      * @throws IllegalArgumentException if the {@code claimsJws} string is {@code null} or empty or only whitespace.
      */
     public Claims parseClaims(String token) throws SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException, IllegalArgumentException {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(token).getBody();
     }
 
     /**
@@ -96,12 +89,14 @@ public class JwtUtil implements Serializable {
      * @return the JWT.
      */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
+        return Jwts
+                .builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + tokenDuration * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getTokenDuration().toMillis()))
+                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();
+
     }
 }

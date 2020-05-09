@@ -30,7 +30,7 @@ public interface InvitationService {
      * @throws DuplicateEntityException if the invitation already exists.
      * @throws EntityNotFoundException  if the given meetup or user wasn't found.
      */
-    InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException;
+    InvitationDto create(InvitationCreationDto invitationCreationDto) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Creates a list of new invitations for the given meetup.
@@ -41,7 +41,7 @@ public interface InvitationService {
      * @throws DuplicateEntityException if one of the given invitations already exists.
      * @throws EntityNotFoundException  if the given meetup or user wasn't found.
      */
-    List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException;
+    List<InvitationDto> create(Long meetupId, List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException;
 
     /**
      * Changes an invitation status.

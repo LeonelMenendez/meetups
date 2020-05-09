@@ -53,35 +53,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    /************ SWAGGER ************/
+                    // SWAGGER
                     .antMatchers(SWAGGER_WHITELIST).permitAll()
 
-                    /************ AUTH ************/
+                    // AUTH
                     .antMatchers(HttpMethod.POST, AuthEndpoint.BASE + AuthEndpoint.SIGN_UP).permitAll()
                     .antMatchers(HttpMethod.POST, AuthEndpoint.BASE + AuthEndpoint.SIGN_IN).permitAll()
 
-                    /************ USER ************/
+                    // USER
                     .antMatchers(HttpMethod.GET, UserEndpoint.ANT_BASE).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.GET, UserEndpoint.BASE + UserEndpoint.ANT_MEETUPS_ENROLLMENTS).hasRole(Role.USER.getName())
                     .antMatchers(HttpMethod.GET, UserEndpoint.BASE + UserEndpoint.ANT_MEETUPS_CREATED).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.GET, UserEndpoint.BASE + UserEndpoint.ANT_MEETUPS_ENROLLED).hasRole(Role.USER.getName())
 
-                    /************ MEETUP ************/
+                    // MEETUP
                     .antMatchers(HttpMethod.POST, MeetupEndpoint.BASE).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.GET, MeetupEndpoint.BASE + MeetupEndpoint.ANT_BEER_CASES).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.GET, MeetupEndpoint.BASE + MeetupEndpoint.ANT_TEMPERATURE).hasAnyRole(Role.USER.getName(), Role.ADMIN.getName())
                     .antMatchers(HttpMethod.POST, MeetupEndpoint.BASE + MeetupEndpoint.ANT_INVITATIONS).hasRole(Role.ADMIN.getName())
 
-                    /************ ENROLLMENT ************/
+                    // ENROLLMENT
                     .antMatchers(HttpMethod.POST, EnrollmentEndpoint.BASE).hasRole(Role.USER.getName())
                     .antMatchers(HttpMethod.POST, EnrollmentEndpoint.BASE + EnrollmentEndpoint.ANT_CHECK_IN).hasRole(Role.USER.getName())
 
-                    /************ INVITATION ************/
+                    // INVITATION
                     .antMatchers(HttpMethod.GET, InvitationEndpoint.ANT_BASE).hasRole(Role.USER.getName())
                     .antMatchers(HttpMethod.POST, InvitationEndpoint.BASE).hasRole(Role.ADMIN.getName())
                     .antMatchers(HttpMethod.PATCH, InvitationEndpoint.BASE + InvitationEndpoint.ANT_INVITATION_STATUS).hasRole(Role.USER.getName())
 
-                    /************ WEATHER ************/
+                    // WEATHER
                     .antMatchers(HttpMethod.GET, WeatherEndpoint.BASE + WeatherEndpoint.ANT_DAILY_FORECAST).hasAnyRole(Role.USER.getName(), Role.ADMIN.getName())
 
                 .anyRequest().authenticated().and()

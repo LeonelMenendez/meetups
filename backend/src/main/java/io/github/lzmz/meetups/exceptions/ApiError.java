@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,6 +57,6 @@ public class ApiError implements Serializable {
         this.status = status.value();
         this.timestamp = LocalDateTime.now();
         this.message = message;
-        errors = Arrays.asList(error);
+        errors = Collections.singletonList(error);
     }
 }

@@ -51,6 +51,13 @@ public class MeetupServiceImpl implements MeetupService {
         return calculateBeerCasesNeeded(meetup.getTemperature(), meetup.getEnrolledUsers().size());
     }
 
+    /**
+     * Calculates the beer cases needed based on temperature and number of participants.
+     *
+     * @param temperature  the temperature that will be used to calculate the required beer cases.
+     * @param participants the number of participants that will be used to calculate the required beer cases.
+     * @return the beer cases needed.
+     */
     public int calculateBeerCasesNeeded(double temperature, int participants) {
         double beersNeeded;
 

@@ -209,7 +209,6 @@ htmlcov/
 .tox/
 .coverage
 .coverage.*
-.cache
 nosetests.xml
 coverage.xml
 *.cover
@@ -221,7 +220,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 
@@ -236,7 +234,6 @@ instance/
 docs/_build/
 
 # PyBuilder
-target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -304,4 +301,3 @@ pickle-email-*.html
 .byebug_history
 
 # Ignore node_modules
-node_modules/

@@ -6,7 +6,6 @@ import io.github.lzmz.meetups.dto.response.MeetupAdminDto;
 import io.github.lzmz.meetups.endpoint.MeetupEndpoint;
 import io.github.lzmz.meetups.exceptions.DuplicateEntityException;
 import io.github.lzmz.meetups.exceptions.EntityNotFoundException;
-import io.github.lzmz.meetups.exceptions.ValueNotAllowedException;
 import io.github.lzmz.meetups.service.InvitationService;
 import io.github.lzmz.meetups.service.MeetupService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,20 +61,20 @@ public class MeetupController {
     @Operation(summary = "Creates a new list of invitations for the given meetup")
     @PostMapping(MeetupEndpoint.INVITATIONS)
     public ResponseEntity<List<InvitationDto>> create(@Valid @PathVariable long meetupId,
-                                                      @Valid @RequestBody List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException, ValueNotAllowedException {
+                                                      @Valid @RequestBody List<Long> userIds) throws DuplicateEntityException, EntityNotFoundException {
         return new ResponseEntity<>(invitationService.create(meetupId, userIds), HttpStatus.CREATED);
     }
 
     /**
-     * Retrieves the amount of beer cases needed for the given meetup.
+     * Retrieves the number of beer cases needed for the given meetup.
      *
      * @param meetupId the meetup id from which the number of beer cases needed will be calculated.
      * @return the amount of beer cases needed.
      * @throws EntityNotFoundException if the given meetup wasn't found.
      */
-    @Operation(summary = "Retrieves the amount of beer cases needed for the given meetup")
+    @Operation(summary = "Retrieves the number of beer cases needed for the given meetup")
     @GetMapping(MeetupEndpoint.BEER_CASES)
-    public ResponseEntity<Integer> getBeerCasesNeeded(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
+    public ResponseEntity<Integer> getNeededBeerCases(@Valid @PathVariable long meetupId) throws EntityNotFoundException {
         return new ResponseEntity<>(meetupService.calculateBeerCasesNeeded(meetupId), HttpStatus.OK);
     }
 

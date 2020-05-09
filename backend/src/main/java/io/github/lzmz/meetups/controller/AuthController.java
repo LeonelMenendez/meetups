@@ -37,7 +37,7 @@ public class AuthController {
      * @throws DuplicateEntityException if the user already exists.
      */
     @Operation(summary = "Signs up a new user")
-    @SecurityRequirements(value = {})
+    @SecurityRequirements
     @PostMapping(AuthEndpoint.SIGN_UP)
     public ResponseEntity<UserDto> signUp(@Valid @RequestBody SignUpDto signUpDTO) throws DuplicateEntityException {
         return new ResponseEntity<>(authService.signUp(signUpDTO), HttpStatus.CREATED);
@@ -50,7 +50,7 @@ public class AuthController {
      * @return the signed in user.
      */
     @Operation(summary = "Signs in a user")
-    @SecurityRequirements(value = {})
+    @SecurityRequirements
     @PostMapping(AuthEndpoint.SIGN_IN)
     public ResponseEntity<UserDto> signIn(@Valid @RequestBody SignInDto signInDTO) {
         return new ResponseEntity<>(authService.signIn(signInDTO), HttpStatus.OK);

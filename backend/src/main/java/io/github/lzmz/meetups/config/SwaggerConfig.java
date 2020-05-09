@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 public class SwaggerConfig {
@@ -112,9 +112,9 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public BeanFactoryPostProcessor beanFactoryPostProcessor(SpringDocConfigProperties springDocConfigProperties) {
+    public static BeanFactoryPostProcessor beanFactoryPostProcessor(SpringDocConfigProperties springDocConfigProperties) {
         return beanFactory -> {
-            springDocConfigProperties.setPackagesToScan(Arrays.asList(BASE_PACKAGE));
+            springDocConfigProperties.setPackagesToScan(Collections.singletonList(BASE_PACKAGE));
             springDocConfigProperties.setDefaultProducesMediaType(JSON_MEDIA_TYPE);
             springDocConfigProperties.setDefaultConsumesMediaType(JSON_MEDIA_TYPE);
         };
