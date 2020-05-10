@@ -27,9 +27,10 @@ public class JwtProperties {
 
     /**
      * JWT duration.
+     * <p>{@link ChronoUnit#MINUTES} will be used if no duration unit is specified.</p>
      */
     @NotNull
-    @DurationUnit(ChronoUnit.HOURS)
-    private Duration tokenDuration;
+    @DurationUnit(ChronoUnit.MINUTES)
+    private Duration duration;
 }
 

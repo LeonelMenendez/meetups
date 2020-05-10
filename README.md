@@ -15,30 +15,41 @@ APP to create meetups and enroll to them through invitations sent by his adminis
 
 ## Launch 🚀
 ### Backend
-> The ``` application.properties ``` file contains the configurations needed to run the application, modify it or create a new profile with your own custom configuration.
+> The ``` application.properties ``` file contains the properties needed to run the application, modify it or create a new profile with your own custom configuration.
 
-Generate the jar file
+> In order to select a profile from where the properties will be recovered, you need to specify the profile name through the environment variables:
+> ```
+> spring.profiles.active=prod
+> ```
+
+> Properties enclosed in curly braces must be provided by environment variables, e.g. ${JWT_DURATION:} can be set as follows:
+> ```
+> JWT_DURATION=45m
+> ```
+
+Generate the jar file:
 ```
 $ mvn install
 ```
-Run
+Run:
 ```
 $ java -jar target/meetup-0.0.1-SNAPSHOT.jar
 ```
 
-### Frontend:
-Install npm dependencies
+### Frontend
+Install npm dependencies:
 ```
 $ npm install
 ```
-Run
+Run:
  ```
 $ ng serve
  ```
 ---
 
-## Built with 🛠️
+## Built with 🛠
 * [IntelliJ IDEA](https://www.jetbrains.com/idea/) - IDE.
+* [Visual Studio Code](https://code.visualstudio.com/) - IDE.
 * [Spring Boot](https://spring.io/projects/spring-boot) - Backend framework.
 * [Angular](https://angular.io/) - Frontend framework.
 * [Angular Material](https://material.angular.io/) - UI component library.

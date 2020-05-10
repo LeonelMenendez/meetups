@@ -24,8 +24,16 @@
         <org.apache.maven.plugins>3.8.1</org.apache.maven.plugins>
     </properties>
 
-    <dependencies>
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 
+    <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -111,7 +119,6 @@
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${org.springdoc.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -141,7 +148,7 @@
                         <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${parent.version}</version>
+                            <version>${project.parent.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
